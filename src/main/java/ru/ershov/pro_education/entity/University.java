@@ -2,13 +2,13 @@ package ru.ershov.pro_education.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
+import lombok.ToString;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Table;
 
 @Setter
 @Getter
-@Component
+@ToString
 @Table(name = "university")
 public class University extends AbstractEntity {
 

@@ -29,7 +29,7 @@
     --primary: #2a9fd6;
     --secondary: #555;
     --success: #77b300;
-    --info: #93c;
+    --info: #7a29a3;
     --warning: #f80;
     --danger: #c00;
     --light: #222;
@@ -47,6 +47,17 @@
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+.gradient-custom {
+    /* fallback for old browsers */
+    background: var(--info);
+
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: -webkit-linear-gradient(to right, var(--info), var(--purple));
+
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: linear-gradient(to right, var(--info), var(--purple))
 }
 
 html {
