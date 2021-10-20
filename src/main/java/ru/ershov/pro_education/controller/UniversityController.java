@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.entity.University;
-import ru.ershov.pro_education.service.UniversityServiceImpl;
+import ru.ershov.pro_education.service.UniversityImpl;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UniversityController {
 
-    private final UniversityServiceImpl universityService;
+    private final UniversityImpl universityService;
 
     @GetMapping
     public ResponseEntity<List<University>> getAllUniversities() {

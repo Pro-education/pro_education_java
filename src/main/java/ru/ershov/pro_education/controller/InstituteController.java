@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ershov.pro_education.dto.InstituteDto;
 import ru.ershov.pro_education.dto.UniversityDto;
-import ru.ershov.pro_education.service.InstituteServiceImpl;
+import ru.ershov.pro_education.service.InstituteImpl;
 
 import java.util.List;
 
@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("/institute")
 @RequiredArgsConstructor
 public class InstituteController {
-    private final InstituteServiceImpl instituteService;
+    private final InstituteImpl instituteService;
 
     @GetMapping
     public ResponseEntity<List<InstituteDto>> getAllInstitutes() {

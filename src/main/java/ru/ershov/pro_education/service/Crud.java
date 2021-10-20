@@ -2,7 +2,7 @@ package ru.ershov.pro_education.service;
 
 import java.util.List;
 
-public interface CrudService<T, ID> {
+public interface Crud<T, ID> {
 
     T findById(ID id);
 

@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
-public class UniversityServiceImpl implements CrudService<University, Long> {
+public class UniversityImpl implements Crud<University, Long> {
 
     private final UniversityDaoImpl dao;
     private final UniversityInstituteServiceImpl universityInstituteService;
