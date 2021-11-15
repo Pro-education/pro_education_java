@@ -9,8 +9,6 @@ import ru.ershov.pro_education.entity.Authorities;
 @Repository
 public class AuthoritiesDaoImpl extends AbstractDao<Authorities, Long> {
 
-
-
     @Autowired
     protected AuthoritiesDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         super(jdbcTemplate, Authorities.class);

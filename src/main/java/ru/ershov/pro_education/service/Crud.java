@@ -13,4 +13,6 @@ public interface Crud<T, ID> {
     <S extends T> S update(ID id, S newEntity);
 
     boolean existById(ID id);
+
+    boolean delete(ID id);
 }

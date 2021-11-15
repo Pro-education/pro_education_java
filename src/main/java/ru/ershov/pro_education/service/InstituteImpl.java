@@ -14,9 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class InstituteImpl extends AbstractCrud<Institute, InstituteDto, Long> {
 
-    private final InstituteDaoImpl instituteDao;
     private final UniversityInstituteServiceImpl universityInstituteService;
-    private final InstituteMapper mapper;
 
     protected InstituteImpl(
             InstituteDaoImpl instituteDao,
@@ -24,8 +22,6 @@ public class InstituteImpl extends AbstractCrud<Institute, InstituteDto, Long> {
             UniversityInstituteServiceImpl universityInstituteService
     ) {
         super(instituteDao, mapper, InstituteNotFound.class);
-        this.instituteDao = instituteDao;
-        this.mapper = mapper;
         this.universityInstituteService = universityInstituteService;
     }
 

@@ -39,4 +39,13 @@ public class UserImpl implements Crud<User, Long> {
         return usersDao.existById(id);
     }
 
+    @Override
+    public boolean delete(Long aLong) {
+        return usersDao.delete(aLong);
+    }
+
+    public User getUser(String email) {
+        return usersDao.findByEmail(email).orElseThrow();
+    }
+
 }

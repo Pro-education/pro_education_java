@@ -2,14 +2,18 @@ package ru.ershov.pro_education.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.ershov.pro_education.config.jwt.JwtFilter;
 
 import javax.sql.DataSource;
+import javax.xml.bind.DatatypeConverter;
 
 @Configuration
 @EnableWebSecurity
@@ -17,24 +21,24 @@ import javax.sql.DataSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final DataSource dataSource;
+    private final JwtFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity)
             throws Exception {
-        httpSecurity.authorizeRequests()
-                .antMatchers("/h2-console/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+        httpSecurity
+                .httpBasic().disable()
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .formLogin();
+                .authorizeRequests()
+                .antMatchers("/university/*").hasRole("User")
+                .antMatchers("/register", "/auth").permitAll()
+                .and()
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-        httpSecurity.csrf()
-                .ignoringAntMatchers("/h2-console/**");
-        httpSecurity.headers()
-                .frameOptions()
-                .sameOrigin();
     }
+
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth)

@@ -1,45 +1,25 @@
 package ru.ershov.pro_education.controller;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.ershov.pro_education.dto.UniversityDto;
 import ru.ershov.pro_education.entity.Institute;
-import ru.ershov.pro_education.entity.University;
 import ru.ershov.pro_education.service.UniversityImpl;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/university")
-@RequiredArgsConstructor
-public class UniversityController {
+public class UniversityController extends AbstractController<UniversityDto, Long> {
 
     private final UniversityImpl universityService;
 
-    @GetMapping
-    public ResponseEntity<List<University>> getAllUniversities() {
-        return ResponseEntity.ok(universityService.findAll());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<University> getUniversity(@PathVariable("id") Long id) {
-        return ResponseEntity.ok(universityService.findById(id));
-    }
-
-    @GetMapping("/insert")
-    public ResponseEntity<University> insertU() {
-        University university = new University();
-        university.setId(12L);
-        university.setName("haha");
-        return ResponseEntity.ok(universityService.insert(university));
-    }
-
-    @GetMapping("/update")
-    public ResponseEntity<University> updateU() {
-        University university = new University();
-        university.setId(12L);
-        university.setName("111111111");
-        return ResponseEntity.ok(universityService.update(100L, university));
+    protected UniversityController(UniversityImpl crud) {
+        super(crud);
+        this.universityService = crud;
     }
 
     @GetMapping("/{id}/institutes")

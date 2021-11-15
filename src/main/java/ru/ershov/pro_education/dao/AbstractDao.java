@@ -17,19 +17,29 @@ import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Id;
 import ru.ershov.pro_education.annotation.Table;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
+import java.lang.invoke.CallSite;
+import java.lang.invoke.LambdaMetafactory;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
+public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
 
-    public static final String SET_TEMPLATE = "set %s = %s";
+    public static final String SET_TEMPLATE = "SET %s = %s";
     public static final String WHERE_ADDER = "WHERE id = :id";
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
@@ -74,10 +84,7 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
 
     protected String getBaseSqlQuery() {
         String name = getTableName();
-        return String.format(
-                selectPattern,
-                findColumnAndIdDbName(),
-                name);
+        return String.format(selectPattern, findColumnAndIdDbName(), name);
     }
 
     public String getTableName() {
@@ -117,11 +124,7 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
         String extracted = pasteSqlInsert(entity);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(extracted, new MapSqlParameterSource(), keyHolder, new String[]{"id"});
-        try {
-            invokeSetter(entity, "id", keyHolder.getKey());
-        } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
-            e.printStackTrace();
-        }
+        invokeSetter(entity, "id", keyHolder.getKey());
         return entity;
     }
 
@@ -132,51 +135,39 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
         }
         String sql = pasteSqlUpdate(id, newEntity);
         jdbcTemplate.update(sql, new MapSqlParameterSource());
-        try {
-            invokeSetter(newEntity, "id", id);
-        } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
-            throw new IllegalArgumentException();
-        }
+        invokeSetter(newEntity, "id", id);
         return newEntity;
     }
 
     @Transactional
-    public void delete(ID id) {
+    public boolean delete(ID id) {
         jdbcTemplate.update(
                 String.format(deletePattern, findIdField(tableClass), id),
                 new MapSqlParameterSource()
         );
+        return true;
     }
 
     private <S extends T> String pasteSqlInsert(S entity) {
         List<String> strNames = new ArrayList<>();
         List<String> strValues = new ArrayList<>();
-        try {
-            for (Map.Entry<String, Object> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
-                strNames.add(fieldAnnotationEntry.getKey());
-                strValues.add(fieldAnnotationEntry.getValue().toString());
-            }
-        } catch (IllegalAccessException | InvocationTargetException | IntrospectionException e) {
-            e.printStackTrace();
+        for (Map.Entry<String, Object> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
+            strNames.add(fieldAnnotationEntry.getKey());
+            strValues.add(fieldAnnotationEntry.getValue().toString());
         }
         return String.format(insertPattern, String.join(", ", strNames), String.join("', '", strValues));
     }
 
     private <S extends T> String pasteSqlUpdate(ID id, S entity) {
         List<String> str = new ArrayList<>();
-        try {
-            for (Map.Entry<String, Object> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
-                str.add(String.format(SET_TEMPLATE, fieldAnnotationEntry.getKey(), fieldAnnotationEntry.getValue()));
-            }
-        } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
-            throw new IllegalArgumentException();
+        for (Map.Entry<String, Object> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
+            str.add(String.format(SET_TEMPLATE, fieldAnnotationEntry.getKey(), fieldAnnotationEntry.getValue()));
         }
         String idFieldName = findIdField(entity.getClass());
         return String.format(updatePattern, String.join(", ", str), idFieldName, id);
     }
 
-    protected <S extends T> Set<Map.Entry<String, Object>> findColumnFieldsNameAndValue(S entity)
-            throws IntrospectionException, InvocationTargetException, IllegalAccessException {
+    protected <S extends T> Set<Map.Entry<String, Object>> findColumnFieldsNameAndValue(S entity) {
         Map<String, Object> map = new HashMap<>();
         Class<?> c = entity.getClass();
         while (c != null) {
@@ -205,9 +196,11 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
     }
 
     public String findColumnAndIdDbName() {
-        return findColumnAndIdDbName(tableClass).stream().collect(
-                Collectors.joining(", " + getTableName() + ".", getTableName() + ".", "")
-        );
+        return findColumnAndIdDbName(tableClass)
+                .stream()
+                .collect(
+                        Collectors.joining(", " + getTableName() + ".", getTableName() + ".", "")
+                );
     }
 
     private Map<String, String> findColumnAndIdDbAndFieldsName(Class<?> entityClass) {
@@ -243,7 +236,7 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
                 if (field.isAnnotationPresent(Id.class)) {
-                    return field.getClass();
+                    return field.getType();
                 }
             }
             c = c.getSuperclass();
@@ -251,18 +244,43 @@ public abstract class AbstractDao<T, ID> implements Dao<T, ID> {
         return Long.class;
     }
 
-    private <S extends T> void invokeSetter(S obj, String propertyName, Object variableValue)
-            throws InvocationTargetException, IllegalAccessException, IntrospectionException {
-        PropertyDescriptor pd = new PropertyDescriptor(propertyName, obj.getClass());
-        Method setter = pd.getWriteMethod();
-        setter.invoke(obj, variableValue);
+    private <S extends T> void invokeSetter(S obj, String propertyName, Object variableValue) {
+        try {
+            final MethodHandles.Lookup lookup = MethodHandles.lookup();
+            final String setterName = "set" + Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
+            Method setterMethod = tableClass.getMethod(setterName, findClassIdField(obj.getClass()));
+            MethodHandle methodHandle = lookup.unreflect(setterMethod);
+            final CallSite site = LambdaMetafactory.metafactory(lookup,
+                    "accept",
+                    MethodType.methodType(BiConsumer.class),
+                    MethodType.methodType(void.class, Object.class, Object.class),
+                    methodHandle,
+                    methodHandle.type());
+            BiConsumer<T, Object> setterConsumer = (BiConsumer<T, Object>) site.getTarget().invokeExact();
+            setterConsumer.accept(obj, variableValue);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
-    private <S extends T> String invokeGetter(S obj, String variableName)
-            throws IntrospectionException, InvocationTargetException, IllegalAccessException {
-        PropertyDescriptor pd = new PropertyDescriptor(variableName, obj.getClass());
-        Method getter = pd.getReadMethod();
-        return getter.invoke(obj).toString();
+    private String invokeGetter(T obj, String variableName) {
+        Function<T, Object> getterFunction = (o) -> "no get value";
+        try {
+            final String getterName = "get" + Character.toUpperCase(variableName.charAt(0)) + variableName.substring(1);
+            final Method method = tableClass.getMethod(getterName);
+            final MethodHandles.Lookup lookup = MethodHandles.lookup();
+            final MethodHandle methodHandle = lookup.unreflect(method);
+            final CallSite site = LambdaMetafactory.metafactory(lookup,
+                    "apply",
+                    MethodType.methodType(Function.class),
+                    MethodType.methodType(Object.class, Object.class),
+                    methodHandle,
+                    methodHandle.type());
+            getterFunction = (Function<T, Object>) site.getTarget().invokeExact();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return getterFunction.apply(obj).toString();
     }
 
 }

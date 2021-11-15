@@ -5,7 +5,7 @@ import lombok.Setter;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Table;
 
-@Table(name = "user")
+@Table(name = "users")
 @Getter
 @Setter
 public class User extends AbstractEntity {

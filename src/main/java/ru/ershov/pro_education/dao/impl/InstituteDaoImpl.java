@@ -5,11 +5,12 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.ershov.pro_education.dao.AbstractDao;
 import ru.ershov.pro_education.entity.Institute;
+import ru.ershov.pro_education.entity.University;
 
 @Repository
 public class InstituteDaoImpl extends AbstractDao<Institute, Long> {
 
-    private final String selectAllInstitutesFromParent = getBaseSqlQuery() + "WHERE university_id = :parentId";
+//    private final String selectAllInstitutesFromParent = getBaseSqlQuery() + "WHERE university_id = :parentId";
 
     @Autowired
     InstituteDaoImpl(
@@ -17,4 +18,5 @@ public class InstituteDaoImpl extends AbstractDao<Institute, Long> {
     ) {
         super(jdbcTemplate, Institute.class);
     }
+
 }

@@ -3,7 +3,6 @@ package ru.ershov.pro_education.service;
 import ru.ershov.pro_education.dao.AbstractDao;
 import ru.ershov.pro_education.dto.AbstractDto;
 import ru.ershov.pro_education.entity.AbstractEntity;
-import ru.ershov.pro_education.exception.InstituteNotFound;
 import ru.ershov.pro_education.mapper.AbstractMapper;
 
 import java.lang.reflect.InvocationTargetException;
@@ -14,7 +13,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractDto, ID extends Number> implements Crud<D, ID> {
 
     private final AbstractDao<E, ID> dao;
-    private final AbstractMapper<E, D> mapper;
+    protected final AbstractMapper<E, D> mapper;
     private final Class<? extends RuntimeException> exception;
 
     protected AbstractCrud(AbstractDao<E, ID> dao, AbstractMapper<E, D> mapper, Class<? extends RuntimeException> exception) {
@@ -59,5 +58,10 @@ public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractD
     @Override
     public boolean existById(ID id) {
         return dao.existById(id);
+    }
+
+    @Override
+    public boolean delete(ID id) {
+        return dao.delete(id);
     }
 }
