@@ -1,5 +1,6 @@
 package ru.ershov.pro_education.service;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.ershov.pro_education.dao.AbstractDao;
 import ru.ershov.pro_education.dto.AbstractDto;
 import ru.ershov.pro_education.entity.AbstractEntity;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractDto, ID extends Number> implements Crud<D, ID> {
 
     protected final AbstractDao<E, ID> dao;
@@ -26,7 +28,8 @@ public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractD
         return () -> {
             try {
                 return exception.getConstructor(Number.class).newInstance(id);
-            } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
+            } catch (InstantiationException | InvocationTargetException
+                    | IllegalAccessException | NoSuchMethodException e) {
                 return new RuntimeException("no entity by id: " + id);
             }
         };
