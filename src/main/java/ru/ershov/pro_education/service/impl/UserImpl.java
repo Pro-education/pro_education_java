@@ -1,10 +1,11 @@
-package ru.ershov.pro_education.service;
+package ru.ershov.pro_education.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.ershov.pro_education.dao.impl.UsersDaoImpl;
 import ru.ershov.pro_education.entity.User;
 import ru.ershov.pro_education.exception.InstituteNotFound;
+import ru.ershov.pro_education.service.Crud;
 
 import java.util.List;
 

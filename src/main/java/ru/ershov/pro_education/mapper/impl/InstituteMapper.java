@@ -1,4 +1,4 @@
-package ru.ershov.pro_education.mapper.Impl;
+package ru.ershov.pro_education.mapper.impl;
 
 import org.springframework.stereotype.Component;
 import ru.ershov.pro_education.dto.InstituteDto;

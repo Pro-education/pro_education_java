@@ -2,7 +2,6 @@ package ru.ershov.pro_education.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -13,7 +12,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import ru.ershov.pro_education.config.jwt.JwtFilter;
 
 import javax.sql.DataSource;
-import javax.xml.bind.DatatypeConverter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,21 +22,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtFilter jwtFilter;
 
     @Override
-    protected void configure(HttpSecurity httpSecurity)
-            throws Exception {
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/university/*").hasRole("User")
-                .antMatchers("/register", "/auth").permitAll()
+                .antMatchers("/register", "/auth", "/swagger-resources/**",
+                        "/swagger-ui.html", "/v2/api-docs", "/webjars/**").permitAll()
+                .antMatchers("/*").hasRole("USER")
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
     }
-
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth)
@@ -48,8 +45,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usersByUsernameQuery("select users.email, users.password, users.enabled "
                         + "from users "
                         + "where email = ?")
-                .authoritiesByUsernameQuery("select authorities.email, authorities.authority "
-                        + "from authorities "
+                .authoritiesByUsernameQuery("select user.email, role.name "
+                        + "from user"
+                        + "join role ON user.role_id = role.id "
                         + "where email = ?");
     }
 }

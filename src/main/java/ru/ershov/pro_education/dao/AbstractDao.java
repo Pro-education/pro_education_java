@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Id;
+import ru.ershov.pro_education.annotation.ManyToOne;
 import ru.ershov.pro_education.annotation.Table;
 
 import java.lang.invoke.CallSite;
@@ -42,12 +43,13 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
     public static final String SET_TEMPLATE = "SET %s = %s";
     public static final String WHERE_ADDER = "WHERE id = :id";
 
-    private final NamedParameterJdbcTemplate jdbcTemplate;
+    protected final NamedParameterJdbcTemplate jdbcTemplate;
     private final Class<T> tableClass;
     private final String selectPattern;
     private final String insertPattern;
     private final String updatePattern;
     private final String deletePattern;
+    private final String selectAllFromParent;
 
     protected AbstractDao(NamedParameterJdbcTemplate jdbcTemplate, Class<T> tableClass) {
         this.jdbcTemplate = jdbcTemplate;
@@ -56,6 +58,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         insertPattern = "INSERT INTO " + getTableName() + " (%s) VALUES ('%s');";
         updatePattern = "UPDATE " + getTableName() + " %s WHERE %s = %s;";
         deletePattern = "DELETE FROM " + getTableName() + " WHERE %s = %s;";
+        selectAllFromParent = getBaseSqlQuery() + " WHERE %s = :parentId;";
     }
 
     public RowMapper<T> getRowMapper() {
@@ -148,27 +151,45 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         return true;
     }
 
+    public List<T> getAllFromParent(ID parentId, Class<?> clazz) {
+        MapSqlParameterSource mapSqlParameterSource =
+                new MapSqlParameterSource("parentId", parentId);
+        return jdbcTemplate.query(String.format(selectAllFromParent, findColumnManyToOne(clazz)), mapSqlParameterSource, getRowMapper());
+    }
+
     private <S extends T> String pasteSqlInsert(S entity) {
         List<String> strNames = new ArrayList<>();
         List<String> strValues = new ArrayList<>();
-        for (Map.Entry<String, Object> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
+        for (Map.Entry<String, String> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
             strNames.add(fieldAnnotationEntry.getKey());
-            strValues.add(fieldAnnotationEntry.getValue().toString());
+            strValues.add(fieldAnnotationEntry.getValue());
         }
         return String.format(insertPattern, String.join(", ", strNames), String.join("', '", strValues));
     }
 
     private <S extends T> String pasteSqlUpdate(ID id, S entity) {
         List<String> str = new ArrayList<>();
-        for (Map.Entry<String, Object> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
+        for (Map.Entry<String, String> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
             str.add(String.format(SET_TEMPLATE, fieldAnnotationEntry.getKey(), fieldAnnotationEntry.getValue()));
         }
         String idFieldName = findIdField(entity.getClass());
         return String.format(updatePattern, String.join(", ", str), idFieldName, id);
     }
 
-    protected <S extends T> Set<Map.Entry<String, Object>> findColumnFieldsNameAndValue(S entity) {
-        Map<String, Object> map = new HashMap<>();
+    protected String findColumnManyToOne(Class<?> clazz) {
+        for (Field field : tableClass.getDeclaredFields()) {
+            if (field.isAnnotationPresent(ManyToOne.class)
+                    && field.isAnnotationPresent(Column.class)
+                    && field.getDeclaredAnnotation(ManyToOne.class).clazz().equals(clazz)
+            ) {
+                return field.getDeclaredAnnotation(Column.class).name();
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    protected <S extends T> Set<Map.Entry<String, String>> findColumnFieldsNameAndValue(S entity) {
+        Map<String, String> map = new HashMap<>();
         Class<?> c = entity.getClass();
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
@@ -280,7 +301,10 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         } catch (Throwable e) {
             e.printStackTrace();
         }
-        return getterFunction.apply(obj).toString();
+        Object apply = getterFunction.apply(obj);
+        if (apply == null)
+            return null;
+        return apply.toString();
     }
 
 }

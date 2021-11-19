@@ -1,4 +1,4 @@
-package ru.ershov.pro_education.controller;
+package ru.ershov.pro_education.controller.impl;
 
 import lombok.Data;
 

@@ -1,15 +1,13 @@
-package ru.ershov.pro_education.controller;
+package ru.ershov.pro_education.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ershov.pro_education.config.jwt.JwtProvider;
 import ru.ershov.pro_education.entity.User;
-import ru.ershov.pro_education.service.UserImpl;
+import ru.ershov.pro_education.service.impl.UserImpl;
 
 import javax.validation.Valid;
 
@@ -20,20 +18,21 @@ public class AuthController {
     private final UserImpl userService;
     private final JwtProvider jwtProvider;
 
-//    @PostMapping("/register")
-//    public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
-//        UserEntity u = new UserEntity();
-//        u.setPassword(registrationRequest.getPassword());
-//        u.setLogin(registrationRequest.getLogin());
-//        userService.saveUser(u);
-//        return "OK";
-//    }
+    @PostMapping("/register")
+    public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
+        User u = new User();
+        u.setPassword(registrationRequest.getPassword());
+        u.setEmail(registrationRequest.getLogin());
+        u.setRoleId(1L);
+        u.setEnabled(true);
+        userService.insert(u);
+        return "OK";
+    }
 
     @PostMapping("/auth")
     public ResponseEntity<String> auth(@RequestBody AuthRequest request) {
         User user = userService.getUser(request.getLogin());
-        String body = jwtProvider.generateToken(user.getEmail(), user.getPassword());
-        System.out.println(body);
+        String body = jwtProvider.generateToken(user.getEmail());
         return ResponseEntity.ok(body);
     }
 

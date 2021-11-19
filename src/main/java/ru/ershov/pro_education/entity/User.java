@@ -17,6 +17,9 @@ public class User extends AbstractEntity {
     private String password;
 
     @Column(name = "enabled")
-    private Short enabled;
+    private Boolean enabled;
+
+    @Column(name = "role_id")
+    private Long roleId;
 
 }

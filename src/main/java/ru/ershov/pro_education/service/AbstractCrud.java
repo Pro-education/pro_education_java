@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 
 public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractDto, ID extends Number> implements Crud<D, ID> {
 
-    private final AbstractDao<E, ID> dao;
+    protected final AbstractDao<E, ID> dao;
     protected final AbstractMapper<E, D> mapper;
     private final Class<? extends RuntimeException> exception;
 
@@ -27,7 +27,7 @@ public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractD
             try {
                 return exception.getConstructor(Number.class).newInstance(id);
             } catch (InstantiationException | InvocationTargetException | IllegalAccessException | NoSuchMethodException e) {
-                return new RuntimeException("no entity bu id: " + id);
+                return new RuntimeException("no entity by id: " + id);
             }
         };
     }

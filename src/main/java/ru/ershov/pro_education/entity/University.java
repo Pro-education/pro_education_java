@@ -12,7 +12,13 @@ import ru.ershov.pro_education.annotation.Table;
 @Table(name = "university")
 public class University extends AbstractEntity {
 
-    @Column(name = "name")
+    @Column(name = "short_name")
     private String name;
+
+    @Column(name = "full_name")
+    private String fullName;
+
+    @Column(name = "vk_link")
+    private String vkLink;
 
 }
