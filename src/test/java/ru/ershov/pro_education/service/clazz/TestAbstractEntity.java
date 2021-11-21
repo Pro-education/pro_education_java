@@ -8,6 +8,7 @@ import ru.ershov.pro_education.entity.AbstractEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-public
-class TestAbstractEntity extends AbstractEntity {
+public class TestAbstractEntity extends AbstractEntity {
+
+    private String field;
 }
