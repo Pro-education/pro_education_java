@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 import ru.ershov.pro_education.entity.User;
-import ru.ershov.pro_education.service.impl.UserImpl;
+import ru.ershov.pro_education.service.impl.UserServiceImpl;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -29,7 +29,7 @@ public class JwtFilter extends GenericFilterBean {
 
     private final JwtProvider jwtProvider;
 
-    private final UserImpl userService;
+    private final UserServiceImpl userService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)

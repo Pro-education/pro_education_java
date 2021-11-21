@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.ershov.pro_education.controller.AbstractController;
 import ru.ershov.pro_education.dto.InstituteDto;
 import ru.ershov.pro_education.dto.UniversityDto;
-import ru.ershov.pro_education.service.impl.UniversityImpl;
+import ru.ershov.pro_education.service.impl.UniversityServiceImpl;
 
 import java.util.List;
 
@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping("/university")
 public class UniversityController extends AbstractController<UniversityDto, Long> {
 
-    private final UniversityImpl universityService;
+    private final UniversityServiceImpl universityService;
 
-    public UniversityController(UniversityImpl service) {
+    public UniversityController(UniversityServiceImpl service) {
         super(service);
         this.universityService = service;
     }

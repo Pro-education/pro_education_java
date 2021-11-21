@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ershov.pro_education.config.jwt.JwtProvider;
 import ru.ershov.pro_education.entity.User;
-import ru.ershov.pro_education.service.impl.UserImpl;
+import ru.ershov.pro_education.service.impl.UserServiceImpl;
 
 import javax.validation.Valid;
 
@@ -15,7 +15,7 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 public class AuthController {
 
-    private final UserImpl userService;
+    private final UserServiceImpl userService;
     private final JwtProvider jwtProvider;
 
     @PostMapping("/register")
