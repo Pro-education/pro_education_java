@@ -53,11 +53,11 @@ public class SwaggerConfig {
     private List<SecurityReference> defaultAuth() {
         final AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         final AuthorizationScope[] authorizationScopes = new AuthorizationScope[]{authorizationScope};
-        return Collections.singletonList(new SecurityReference("Bearer", authorizationScopes));
+        return Collections.singletonList(new SecurityReference("JWT", authorizationScopes));
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("Bearer", "Authorization", "header");
+        return new ApiKey("JWT", "Authorization", "header");
     }
 
     private ApiInfo apiInfo() {
