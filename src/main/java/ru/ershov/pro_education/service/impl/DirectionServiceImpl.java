@@ -11,7 +11,7 @@ import ru.ershov.pro_education.service.AbstractCrudService;
 @Service
 public class DirectionServiceImpl extends AbstractCrudService<Direction, DirectionDto, Long> {
 
-    protected DirectionServiceImpl(DirectionDaoImpl directionDao,
+    DirectionServiceImpl(DirectionDaoImpl directionDao,
                                    DirectionMapper directionMapper) {
         super(directionDao, directionMapper, DirectionNotFound.class);
     }
