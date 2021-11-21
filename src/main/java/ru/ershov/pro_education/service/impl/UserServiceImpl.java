@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import ru.ershov.pro_education.dao.impl.UsersDaoImpl;
 import ru.ershov.pro_education.entity.User;
 import ru.ershov.pro_education.exception.InstituteNotFound;
-import ru.ershov.pro_education.service.Crud;
+import ru.ershov.pro_education.service.CrudService;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserImpl implements Crud<User, Long> {
+public class UserServiceImpl implements CrudService<User, Long> {
 
     private final UsersDaoImpl usersDao;
 

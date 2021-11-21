@@ -8,19 +8,19 @@ import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.entity.University;
 import ru.ershov.pro_education.exception.InstituteNotFound;
 import ru.ershov.pro_education.mapper.impl.UniversityMapper;
-import ru.ershov.pro_education.service.AbstractCrud;
+import ru.ershov.pro_education.service.AbstractCrudService;
 
 import java.util.List;
 
 @Service
-public class UniversityImpl extends AbstractCrud<University, UniversityDto, Long> {
+public class UniversityServiceImpl extends AbstractCrudService<University, UniversityDto, Long> {
 
-    private final InstituteImpl instituteService;
+    private final InstituteServiceImpl instituteService;
 
-    protected UniversityImpl(
+    protected UniversityServiceImpl(
             UniversityDaoImpl dao,
             UniversityMapper mapper,
-            InstituteImpl instituteService) {
+            InstituteServiceImpl instituteService) {
         super(dao, mapper, InstituteNotFound.class);
         this.instituteService = instituteService;
     }

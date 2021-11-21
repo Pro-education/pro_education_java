@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import ru.ershov.pro_education.service.Crud;
+import ru.ershov.pro_education.service.CrudService;
 
 import java.util.List;
 
 public abstract class AbstractController<D, ID extends Number> implements Controller<D, ID> {
 
-    protected final Crud<D, ID> service;
+    protected final CrudService<D, ID> service;
 
-    protected AbstractController(Crud<D, ID> service) {
+    protected AbstractController(CrudService<D, ID> service) {
         this.service = service;
     }
 

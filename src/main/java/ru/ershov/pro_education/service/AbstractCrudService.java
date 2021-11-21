@@ -12,13 +12,13 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractCrud<E extends AbstractEntity, D extends AbstractDto, ID extends Number> implements Crud<D, ID> {
+public abstract class AbstractCrudService<E extends AbstractEntity, D extends AbstractDto, ID extends Number> implements CrudService<D, ID> {
 
     protected final AbstractDao<E, ID> dao;
     protected final AbstractMapper<E, D> mapper;
     private final Class<? extends RuntimeException> exception;
 
-    protected AbstractCrud(AbstractDao<E, ID> dao, AbstractMapper<E, D> mapper, Class<? extends RuntimeException> exception) {
+    protected AbstractCrudService(AbstractDao<E, ID> dao, AbstractMapper<E, D> mapper, Class<? extends RuntimeException> exception) {
         this.dao = dao;
         this.mapper = mapper;
         this.exception = exception;
