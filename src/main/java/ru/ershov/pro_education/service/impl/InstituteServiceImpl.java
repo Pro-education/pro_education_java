@@ -7,15 +7,15 @@ import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.entity.University;
 import ru.ershov.pro_education.exception.InstituteNotFound;
 import ru.ershov.pro_education.mapper.impl.InstituteMapper;
-import ru.ershov.pro_education.service.AbstractCrud;
+import ru.ershov.pro_education.service.AbstractCrudService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class InstituteImpl extends AbstractCrud<Institute, InstituteDto, Long> {
+public class InstituteServiceImpl extends AbstractCrudService<Institute, InstituteDto, Long> {
 
-    protected InstituteImpl(
+    protected InstituteServiceImpl(
             InstituteDaoImpl instituteDao,
             InstituteMapper mapper
     ) {

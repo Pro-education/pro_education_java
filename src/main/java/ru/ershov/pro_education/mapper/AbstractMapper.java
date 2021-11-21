@@ -1,6 +1,5 @@
 package ru.ershov.pro_education.mapper;
 
-import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ershov.pro_education.dto.AbstractDto;
@@ -15,6 +14,10 @@ public abstract class AbstractMapper<E extends AbstractEntity, D extends Abstrac
 
     @Autowired
     private ModelMapper mapper;
+
+    protected void setMapper(ModelMapper mapper) {
+        this.mapper = mapper;
+    }
 
     protected AbstractMapper(Class<E> entityClass, Class<D> dtoClass) {
         this.entityClass = entityClass;

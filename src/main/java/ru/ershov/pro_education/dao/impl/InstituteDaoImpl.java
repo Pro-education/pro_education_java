@@ -9,7 +9,6 @@ import ru.ershov.pro_education.entity.Institute;
 @Repository
 public class InstituteDaoImpl extends AbstractDao<Institute, Long> {
 
-    @Autowired
     InstituteDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
         super(jdbcTemplate, Institute.class);
     }
