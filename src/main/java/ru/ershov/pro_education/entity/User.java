@@ -1,19 +1,25 @@
 package ru.ershov.pro_education.entity;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
+import ru.ershov.pro_education.annotation.Column;
+import ru.ershov.pro_education.annotation.Table;
 
-import java.util.List;
-
+@Table(name = "users")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class User extends AbstractEntity  {
+@Setter
+public class User extends AbstractEntity {
 
-    private String username;
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "password")
     private String password;
 
-    private List<UserRole> roles;
+    @Column(name = "enabled")
+    private Boolean enabled;
+
+    @Column(name = "role_id")
+    private Long roleId;
 
 }

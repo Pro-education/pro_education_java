@@ -4,13 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.ershov.pro_education.dao.AbstractDao;
-import ru.ershov.pro_education.entity.University;
+import ru.ershov.pro_education.entity.Authorities;
 
 @Repository
-public class UniversityDaoImpl extends AbstractDao<University, Long> {
+public class AuthoritiesDaoImpl extends AbstractDao<Authorities, Long> {
 
-    UniversityDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
-        super(jdbcTemplate, University.class);
+    @Autowired
+    protected AuthoritiesDaoImpl(NamedParameterJdbcTemplate jdbcTemplate) {
+        super(jdbcTemplate, Authorities.class);
     }
 
 }
