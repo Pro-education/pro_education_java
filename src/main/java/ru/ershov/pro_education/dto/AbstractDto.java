@@ -12,7 +12,7 @@ import java.io.Serializable;
 @Validated
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 public abstract class AbstractDto implements Serializable {
     @Null // we don't change id
     @JsonProperty("id")

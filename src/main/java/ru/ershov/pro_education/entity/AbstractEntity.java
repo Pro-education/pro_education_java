@@ -9,7 +9,7 @@ import ru.ershov.pro_education.annotation.Id;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 public abstract class AbstractEntity {
 
     @Id
