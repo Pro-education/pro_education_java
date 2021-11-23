@@ -8,7 +8,6 @@ import ru.ershov.pro_education.dto.AbstractDto;
 @Getter
 @Setter
 @NoArgsConstructor
-public
-class TestAbstractDto extends AbstractDto {
-    private String name;
+public class TestAbstractDto extends AbstractDto {
+    private String field;
 }

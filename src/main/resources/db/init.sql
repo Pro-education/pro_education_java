@@ -3,7 +3,6 @@ CREATE TABLE "university"
     "id"         BIGSERIAL PRIMARY KEY,
     "short_name" varchar(127),
     "full_name"  varchar(255),
-    "reviews_id" bigint,
     "vk_link"    varchar(255)
 );
 
@@ -30,7 +29,6 @@ CREATE TABLE "direction"
     "departament_id" bigint,
     "number"         varchar(255),
     "name"           varchar(255),
-    "reviews_id"     bigint,
     "vk_link"        varchar(255)
 );
 
@@ -43,24 +41,25 @@ CREATE TABLE "institute_departament"
 
 CREATE TABLE "groups"
 (
-    "id"            BIGSERIAL PRIMARY KEY,
-    "headman"       bigint,
-    "direction_id"  bigint,
-    "vk_link"       varchar(255),
-    "reviews_id"    bigint,
-    "raiting_sum"   bigint,
-    "raiting_count" bigint
+    "id"           BIGSERIAL PRIMARY KEY,
+    "headman"      bigint,
+    "direction_id" bigint,
+    "name"         text,
+    "vk_link"      varchar(255)
 );
 
 CREATE TABLE "users"
 (
     "id"            BIGSERIAL PRIMARY KEY,
-    "usename"       varchar(127),
+    "username"       varchar(127),
     "name"          varchar(63),
-    "suname"        varchar(63),
+    "surname"        varchar(63),
     "vk_link"       varchar(255),
-    "raiting_sum"   bigint,
-    "raiting_count" bigint
+    "email"         text,
+    "password"      text,
+    "enabled"       boolean,
+    "rating_sum"   bigint,
+    "rating_count" bigint
 );
 
 CREATE TABLE "role"
@@ -88,10 +87,10 @@ CREATE TABLE "reviews"
     "id"          BIGSERIAL PRIMARY KEY,
     "user_id"     bigint,
     "status_id"   bigint,
-    "link_id"     bigint,
-    "link_name"   int,
+    "table_id"    bigint,
+    "table_name"  int,
     "text"        text,
-    "reiting"     int,
+    "rating"     int,
     "create_time" timestamp DEFAULT (current_timestamp)
 );
 
@@ -120,6 +119,7 @@ CREATE TABLE "main_tasks"
 (
     "id"               BIGSERIAL PRIMARY KEY,
     "text"             text,
+    "subject_id"       bigint,
     "main_homework_id" bigint
 );
 
@@ -143,6 +143,13 @@ CREATE TABLE "discussions"
     "review_id" bigint,
     "user_id"   bigint,
     "text"      text
+);
+
+CREATE TABLE "subject"
+(
+    "id"           BIGSERIAL PRIMARY KEY,
+    "name"         text,
+    "direction_id" bigint
 );
 
 ALTER TABLE "institute"
@@ -191,6 +198,9 @@ ALTER TABLE "main_homeworks"
     ADD FOREIGN KEY ("group_id") REFERENCES "groups" ("id");
 
 ALTER TABLE "main_tasks"
+    ADD FOREIGN KEY ("subject_id") REFERENCES "subject" ("id");
+
+ALTER TABLE "main_tasks"
     ADD FOREIGN KEY ("main_homework_id") REFERENCES "main_homeworks" ("id");
 
 ALTER TABLE "individual_tasks"
@@ -204,3 +214,6 @@ ALTER TABLE "discussions"
 
 ALTER TABLE "discussions"
     ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+
+ALTER TABLE "subject"
+    ADD FOREIGN KEY ("direction_id") REFERENCES "direction" ("id");

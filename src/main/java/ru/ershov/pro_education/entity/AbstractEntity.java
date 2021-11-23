@@ -1,6 +1,10 @@
 package ru.ershov.pro_education.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Id;
 
@@ -9,7 +13,7 @@ import ru.ershov.pro_education.annotation.Id;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@EqualsAndHashCode
 public abstract class AbstractEntity {
 
     @Id

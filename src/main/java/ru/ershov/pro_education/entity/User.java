@@ -2,7 +2,9 @@ package ru.ershov.pro_education.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.userdetails.UserDetails;
 import ru.ershov.pro_education.annotation.Column;
+import ru.ershov.pro_education.annotation.ManyToOne;
 import ru.ershov.pro_education.annotation.Table;
 
 @Table(name = "users")
@@ -18,8 +20,5 @@ public class User extends AbstractEntity {
 
     @Column(name = "enabled")
     private Boolean enabled;
-
-    @Column(name = "role_id")
-    private Long roleId;
 
 }

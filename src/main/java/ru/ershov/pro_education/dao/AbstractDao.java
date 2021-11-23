@@ -1,5 +1,6 @@
 package ru.ershov.pro_education.dao;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.NotWritablePropertyException;
@@ -151,7 +152,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         return true;
     }
 
-    public List<T> getAllFromParent(ID parentId, Class<?> clazz) {
+    protected List<T> getAllFromParent(ID parentId, Class<?> clazz) {
         MapSqlParameterSource mapSqlParameterSource =
                 new MapSqlParameterSource("parentId", parentId);
         return jdbcTemplate.query(String.format(selectAllFromParent, findColumnManyToOne(clazz)), mapSqlParameterSource, getRowMapper());

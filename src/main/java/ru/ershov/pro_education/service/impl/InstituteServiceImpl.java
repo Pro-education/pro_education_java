@@ -14,16 +14,18 @@ import java.util.stream.Collectors;
 
 @Service
 public class InstituteServiceImpl extends AbstractCrudService<Institute, InstituteDto, Long> {
+    private final InstituteDaoImpl instituteDao;
 
     protected InstituteServiceImpl(
             InstituteDaoImpl instituteDao,
             InstituteMapper mapper
     ) {
         super(instituteDao, mapper, InstituteNotFound.class);
+        this.instituteDao = instituteDao;
     }
 
     List<InstituteDto> findAllByUniversityId(Long universityId) {
-        return dao.getAllFromParent(universityId, University.class)
+        return instituteDao.findAllByUniversityId(universityId)
                 .stream()
                 .map(mapper::toDto)
                 .collect(Collectors.toList());

@@ -2,52 +2,66 @@ package ru.ershov.pro_education.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.ershov.pro_education.config.jwt.JwtFilter;
-
-import javax.sql.DataSource;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import ru.ershov.pro_education.config.jwt.JwtAuthenticationFilter;
+import ru.ershov.pro_education.service.impl.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    private final DataSource dataSource;
-    private final JwtFilter jwtFilter;
+    @Autowired
+    private UserServiceImpl service;
+
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
-                .httpBasic().disable()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+                .cors().and().csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/register", "/auth", "/swagger-resources/**",
-                        "/swagger-ui.html", "/v2/api-docs", "/webjars/**").permitAll()
-                .antMatchers("/*").hasRole("USER")
+                .antMatchers("/authenticate", "/users/register").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth)
-            throws Exception {
-        auth.jdbcAuthentication()
-                .dataSource(dataSource)
-                .usersByUsernameQuery("select users.email, users.password, users.enabled "
-                        + "from users "
-                        + "where email = ?")
-                .authoritiesByUsernameQuery("select user.email, role.name "
-                        + "from user"
-                        + "join role ON user.role_id = role.id "
-                        + "where email = ?");
+    @Bean
+    public PasswordEncoder devPasswordEncoder() {
+        return NoOpPasswordEncoder.getInstance();
     }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(service);
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public JwtAuthenticationFilter authenticationTokenFilterBean() {
+        return new JwtAuthenticationFilter();
+    }
+
 }
