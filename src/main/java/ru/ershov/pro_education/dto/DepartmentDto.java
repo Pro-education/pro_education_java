@@ -4,7 +4,6 @@ import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
@@ -13,17 +12,15 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class DirectionDto extends AbstractDto{
+public class DepartmentDto extends AbstractDto{
 
     @NotBlank
-    private String name;
+    private String shortName;
 
     @NotBlank
-    private String number;
-
-    @NotEmpty
-    private Long reviewsId;
+    private String fullName;
 
     @NotBlank
     private String vkLink;
+
 }

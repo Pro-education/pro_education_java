@@ -3,7 +3,6 @@ package ru.ershov.pro_education.dto;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
@@ -12,12 +11,12 @@ import javax.validation.constraints.NotEmpty;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class SubjectDto extends AbstractDto {
-
-    @NotBlank
-    private String name;
+public class InstituteDepartmentDto extends AbstractDto {
 
     @NotEmpty
-    private Long directionId;
+    private Long instituteId;
+
+    @NotEmpty
+    private Long departmentId;
+
 }

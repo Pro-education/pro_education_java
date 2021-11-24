@@ -18,4 +18,5 @@ public class InstituteDaoImpl extends AbstractDao<Institute, Long> {
     public List<Institute> findAllByUniversityId(Long universityId) {
         return getAllFromParent(universityId, University.class);
     }
+
 }

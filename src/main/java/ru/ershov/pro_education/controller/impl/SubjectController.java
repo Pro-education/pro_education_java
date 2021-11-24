@@ -9,7 +9,7 @@ import ru.ershov.pro_education.service.impl.SubjectServiceImpl;
 @RestController
 @RequestMapping("/api/subject")
 public class SubjectController extends AbstractController<SubjectDto, Long> {
-    SubjectController(SubjectServiceImpl subjectService) {
+    public SubjectController(SubjectServiceImpl subjectService) {
         super(subjectService);
     }
 }
