@@ -4,18 +4,42 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 
 @SpringBootTest
 class DirectionTest {
 
     @Test
-    void testEquals_DifferentFieldsAndSameId_True() {
-        Direction dir1 = new Direction("direction1", "00", 15L, "vk.com/id123");
-        dir1.setId(1L);
-        Direction dir2 = new Direction("direction2", "0013Y", 12L, "vk.com/id1");
-        dir2.setId(1L);
-        assertThat(dir1.equals(dir2)).isTrue();
+    void testEquals(){
+        Direction firstDir = new Direction();
+        firstDir.setId(1L);
+        firstDir.setName("value");
+        firstDir.setNumber("value");
+        firstDir.setReviewsId(2L);
+        firstDir.setVkLink("value");
+        Direction secondDir = new Direction();
+        secondDir.setId(1L);
+        secondDir.setName("another value");
+        secondDir.setNumber("another value");
+        secondDir.setReviewsId(3L);
+        secondDir.setVkLink("another value");
+        Assertions.assertTrue(firstDir.equals(secondDir));
+    }
+
+    @Test
+    void TestNoEquals(){
+        Direction firstDir = new Direction();
+        firstDir.setId(1L);
+        firstDir.setName("value");
+        firstDir.setNumber("value");
+        firstDir.setReviewsId(3L);
+        firstDir.setVkLink("value");
+        Direction secondDir = new Direction();
+        secondDir.setId(2L);
+        secondDir.setName("value");
+        secondDir.setNumber("value");
+        secondDir.setReviewsId(3L);
+        secondDir.setVkLink("value");
+        Assertions.assertFalse(firstDir.equals(secondDir));
+
     }
 }

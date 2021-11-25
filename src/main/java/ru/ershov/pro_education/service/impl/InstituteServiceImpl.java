@@ -15,16 +15,13 @@ import java.util.stream.Collectors;
 public class InstituteServiceImpl extends AbstractCrudService<Institute, InstituteDto, Long> {
 
     private final InstituteDaoImpl instituteDao;
-    private final InstituteDepartmentServiceImpl instituteDepartmentService;
 
     protected InstituteServiceImpl(
             InstituteDaoImpl instituteDao,
-            InstituteMapper mapper,
-            InstituteDepartmentServiceImpl instituteDepartmentService
+            InstituteMapper mapper
     ) {
         super(instituteDao, mapper, InstituteNotFound.class);
         this.instituteDao = instituteDao;
-        this.instituteDepartmentService = instituteDepartmentService;
     }
 
     public List<InstituteDto> findAllByUniversityId(Long universityId) {
@@ -34,10 +31,4 @@ public class InstituteServiceImpl extends AbstractCrudService<Institute, Institu
                 .collect(Collectors.toList());
     }
 
-    public List<InstituteDto> findAllByDepartmentId(Long departmentId){
-        return instituteDepartmentService.findAllByDepartmentId(departmentId)
-                .stream()
-                .map(instituteDepartment -> findById(instituteDepartment.getInstituteId()))
-                .collect(Collectors.toList());
-    }
 }
