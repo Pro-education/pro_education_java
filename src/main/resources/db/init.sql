@@ -137,9 +137,9 @@ ALTER TABLE "institute" ADD FOREIGN KEY ("university_id") REFERENCES "university
 
 ALTER TABLE "direction" ADD FOREIGN KEY ("departament_id") REFERENCES "department" ("id");
 
-ALTER TABLE "institute_departament" ADD FOREIGN KEY ("departament_id") REFERENCES "department" ("id");
+ALTER TABLE institute_department ADD FOREIGN KEY (department_id) REFERENCES "department" ("id");
 
-ALTER TABLE "institute_departament" ADD FOREIGN KEY ("institute_id") REFERENCES "institute" ("id");
+ALTER TABLE institute_department ADD FOREIGN KEY ("institute_id") REFERENCES "institute" ("id");
 
 ALTER TABLE "groups" ADD FOREIGN KEY ("headman") REFERENCES "users" ("id");
 
