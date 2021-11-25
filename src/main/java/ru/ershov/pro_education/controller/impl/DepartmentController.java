@@ -7,7 +7,6 @@ import ru.ershov.pro_education.dto.DirectionDto;
 import ru.ershov.pro_education.dto.InstituteDto;
 import ru.ershov.pro_education.service.impl.DepartmentServiceImpl;
 import ru.ershov.pro_education.service.impl.InstituteDepartmentServiceImpl;
-import ru.ershov.pro_education.service.impl.InstituteServiceImpl;
 
 import java.util.List;
 
@@ -16,21 +15,18 @@ import java.util.List;
 public class DepartmentController extends AbstractController<DepartmentDto, Long> {
 
     private final DepartmentServiceImpl departmentService;
-    private final InstituteServiceImpl instituteService;
     private final InstituteDepartmentServiceImpl instituteDepartmentService;
 
     DepartmentController(DepartmentServiceImpl departmentService,
-                         InstituteServiceImpl instituteService,
                          InstituteDepartmentServiceImpl instituteDepartmentService) {
         super(departmentService);
         this.departmentService = departmentService;
-        this.instituteService = instituteService;
         this.instituteDepartmentService = instituteDepartmentService;
     }
 
     @GetMapping("/{departmentId}/institutes")
     public List<InstituteDto> findAllInstitutes(@PathVariable("departmentId") Long departmentId){
-        return instituteService.findAllByDepartmentId(departmentId);
+        return instituteDepartmentService.findAllByDepartmentId(departmentId);
     }
 
     @GetMapping("/{departmentId}/directions")
