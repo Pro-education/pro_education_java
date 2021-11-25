@@ -13,8 +13,8 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class RoleServiceImpl  {
-    private final  RoleDaoImpl roleDao;
+public class RoleServiceImpl {
+    private final RoleDaoImpl roleDao;
     private final UserRoleDaoImpl userRoleDao;
 
     public Set<SimpleGrantedAuthority> getRolesByUserId(Long userId) {
