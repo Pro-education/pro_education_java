@@ -18,7 +18,9 @@ public class UniversityDto extends AbstractDto {
     @NotBlank(message = "The name field should not be empty")
     private String name;
 
+    @NotBlank
     private String fullName;
 
+    @NotBlank
     private String vkLink;
 }

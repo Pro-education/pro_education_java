@@ -13,17 +13,11 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class DirectionDto extends AbstractDto{
+public class SubjectDto extends AbstractDto {
 
     @NotBlank
     private String name;
 
-    @NotBlank
-    private String number;
-
     @NotEmpty
-    private Long reviewsId;
-
-    @NotBlank
-    private String vkLink;
+    private Long directionId;
 }

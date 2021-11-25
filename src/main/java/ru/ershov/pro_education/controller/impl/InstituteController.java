@@ -1,17 +1,34 @@
 package ru.ershov.pro_education.controller.impl;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.ershov.pro_education.controller.AbstractController;
+import ru.ershov.pro_education.dto.DepartmentDto;
 import ru.ershov.pro_education.dto.InstituteDto;
+import ru.ershov.pro_education.service.impl.InstituteDepartmentServiceImpl;
 import ru.ershov.pro_education.service.impl.InstituteServiceImpl;
 
-@Controller
-@RequestMapping("/institute")
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/institute")
 public class InstituteController extends AbstractController<InstituteDto, Long> {
 
-    public InstituteController(InstituteServiceImpl crud) {
-        super(crud);
+    private final InstituteDepartmentServiceImpl instituteDepartmentService;
+
+    public InstituteController(InstituteServiceImpl instituteService,
+                               InstituteDepartmentServiceImpl instituteDepartmentService) {
+        super(instituteService);
+        this.instituteDepartmentService = instituteDepartmentService;
     }
 
+    @GetMapping("/{instituteId}/departments")
+    public List<DepartmentDto> findAllDepartments(@PathVariable("instituteId") Long instituteId){
+        return instituteDepartmentService.findAllByInstituteId(instituteId);
+    }
+
+    @PostMapping("/{instituteId}/departments/{departmentId}")
+    public void insertDepartment(@PathVariable("instituteId") Long instituteId,
+                                @PathVariable("departmentId") Long departmentId){
+        instituteDepartmentService.connect(instituteId, departmentId);
+    }
 }
