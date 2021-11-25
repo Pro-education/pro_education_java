@@ -2,10 +2,8 @@ package ru.ershov.pro_education.entity;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 
-@SpringBootTest
 class DirectionTest {
 
     @Test

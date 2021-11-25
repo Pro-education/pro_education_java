@@ -28,7 +28,7 @@ public abstract class AbstractController<D, ID extends Number> implements Contro
     }
 
     @Override
-//    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @GetMapping
     @ApiOperation("Отдает массив объектов")
     public ResponseEntity<List<D>> findAll() {
