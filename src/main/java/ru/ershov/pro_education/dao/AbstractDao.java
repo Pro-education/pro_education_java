@@ -1,6 +1,5 @@
 package ru.ershov.pro_education.dao;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.NotWritablePropertyException;

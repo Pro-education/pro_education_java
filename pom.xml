@@ -19,6 +19,7 @@
         <jasypt.version>3.0.2</jasypt.version>
         <swagger.version>2.9.2</swagger.version>
         <testcontainers.version>1.15.1</testcontainers.version>
+        <postgresql.password>p</postgresql.password>
     </properties>
     <dependencies>
         <dependency>
@@ -104,6 +105,82 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.33.0</version>
+
+                <configuration>
+                    <!-- URL to Docker daemon -->
+                    <dockerHost>unix:///var/run/docker.sock</dockerHost>
+                    <!-- Configured Docker images -->
+                    <images>
+                        <!--PostgreSQL image-->
+                        <image>
+                            <alias>postgres</alias>
+                            <name>postgres:12.4</name>
+                            <build>
+
+                                <assembly>
+                                    <mode>dir</mode>
+                                    <!-- database startup script -->
+                                    <targetDir>/docker-entrypoint-initdb.d</targetDir>
+                                    <inline>
+                                        <files>
+                                            <file>
+                                                <source>src/main/resources/db/init.sql</source>
+                                            </file>
+                                        </files>
+                                    </inline>
+                                </assembly>
+                                <env>
+                                    <POSTGRES_DB>postgres</POSTGRES_DB>
+                                    <POSTGRES_USER>u</POSTGRES_USER>
+                                    <POSTGRES_PASSWORD>p</POSTGRES_PASSWORD>
+                                </env>
+                                <ports>
+                                    <port>5432/tcp</port>
+                                </ports>
+                            </build>
+                            <run>
+                                <env>
+                                    <POSTGRES_DB>postgres</POSTGRES_DB>
+                                    <POSTGRES_USER>u</POSTGRES_USER>
+                                    <POSTGRES_PASSWORD>p</POSTGRES_PASSWORD>
+                                </env>
+                                <ports>
+                                    <port>5432:5432</port>
+                                </ports>
+                            </run>
+                        </image>
+                    </images>
+
+                    <!-- If we want to skip tests we should also skip Docker plugin execution -->
+                    <!--                    <skip>${maven.test.skip}</skip>-->
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <!-- start Docker -->
+                        <id>start</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>build</goal>
+                            <goal>start</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <!-- stop Docker -->
+                        <id>stop</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>stop</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

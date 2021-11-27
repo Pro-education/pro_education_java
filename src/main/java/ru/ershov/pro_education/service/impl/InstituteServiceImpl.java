@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.ershov.pro_education.dao.impl.InstituteDaoImpl;
 import ru.ershov.pro_education.dto.InstituteDto;
 import ru.ershov.pro_education.entity.Institute;
-import ru.ershov.pro_education.exception.InstituteNotFound;
+import ru.ershov.pro_education.exception.not_found.InstituteNotFound;
 import ru.ershov.pro_education.mapper.impl.InstituteMapper;
 import ru.ershov.pro_education.service.AbstractCrudService;
 

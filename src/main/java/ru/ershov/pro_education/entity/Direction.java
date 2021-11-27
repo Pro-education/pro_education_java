@@ -20,9 +20,6 @@ public class Direction extends AbstractEntity {
     @Column(name = "number")
     private String number;
 
-    @Column(name = "reviews_id")
-    private Long reviewsId;
-
     @Column(name = "vk_link")
     private String vkLink;
 

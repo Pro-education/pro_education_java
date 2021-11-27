@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,7 +20,7 @@ import java.util.Date;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Component
+@Configuration
 public class TokenProvider {
     private static final byte[] SIGNING_KEY = "signingkey".getBytes(StandardCharsets.UTF_8);
     private static final String AUTHORITIES_KEY = "roles";

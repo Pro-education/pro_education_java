@@ -1,7 +1,8 @@
 package ru.ershov.pro_education.config.jwt;
 
 import io.jsonwebtoken.ExpiredJwtException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Configuration
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public static final String HEADER_STRING = "Authorization";
@@ -24,8 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Resource(name = "userServiceImpl")
     private UserDetailsService userDetailsService;
 
-    @Autowired
-    private TokenProvider jwtTokenUtil;
+    private final TokenProvider jwtTokenUtil;
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws IOException, ServletException {
@@ -43,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
         } else {
             logger.warn("Couldn't find bearer string, header will be ignored");
+            logger.warn(req.getServletPath());
         }
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 

@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.ershov.pro_education.config.ModelMapperConfig;
 import ru.ershov.pro_education.dao.AbstractDao;
 import ru.ershov.pro_education.dto.AbstractDto;
