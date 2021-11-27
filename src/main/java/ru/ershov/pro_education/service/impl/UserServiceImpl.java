@@ -8,10 +8,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.ershov.pro_education.dao.impl.UsersDaoImpl;
 import ru.ershov.pro_education.entity.User;
-import ru.ershov.pro_education.exception.InstituteNotFound;
+import ru.ershov.pro_education.exception.not_found.InstituteNotFound;
 import ru.ershov.pro_education.service.CrudService;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

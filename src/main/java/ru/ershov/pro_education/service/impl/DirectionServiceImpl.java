@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ru.ershov.pro_education.dao.impl.DirectionDaoImpl;
 import ru.ershov.pro_education.dto.DirectionDto;
 import ru.ershov.pro_education.entity.Direction;
-import ru.ershov.pro_education.exception.DirectionNotFound;
+import ru.ershov.pro_education.exception.not_found.DirectionNotFound;
 import ru.ershov.pro_education.mapper.impl.DirectionMapper;
 import ru.ershov.pro_education.service.AbstractCrudService;
 

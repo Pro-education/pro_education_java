@@ -6,7 +6,7 @@ import ru.ershov.pro_education.dto.InstituteDto;
 import ru.ershov.pro_education.dto.UniversityDto;
 import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.entity.University;
-import ru.ershov.pro_education.exception.InstituteNotFound;
+import ru.ershov.pro_education.exception.not_found.InstituteNotFound;
 import ru.ershov.pro_education.mapper.impl.UniversityMapper;
 import ru.ershov.pro_education.service.AbstractCrudService;
 

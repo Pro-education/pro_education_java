@@ -8,6 +8,8 @@ import lombok.Setter;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Id;
 
+import java.sql.Timestamp;
+
 
 @Getter
 @Setter
@@ -20,5 +22,11 @@ public abstract class AbstractEntity {
     @Column(name = "id")
     @EqualsAndHashCode.Include
     private Long id;
+
+    @Column(name = "updated_time")
+    private Timestamp updatedTime;
+
+    @Column(name = "create_time")
+    private Timestamp createTime;
 
 }

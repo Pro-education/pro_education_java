@@ -1,8 +1,6 @@
 package ru.ershov.pro_education.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,32 +13,33 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import ru.ershov.pro_education.config.jwt.JwtAuthenticationFilter;
 import ru.ershov.pro_education.service.impl.UserServiceImpl;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private UserServiceImpl service;
-
-    @Autowired
-    @Qualifier("handlerExceptionResolver")
-    private HandlerExceptionResolver resolver;
+    private static final String[] SWAGGER_PATH = {"/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
+            "/configuration/security", "/swagger-ui.html", "/webjars/**"};
+    private final UserServiceImpl userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .cors().and().csrf().disable()
                 .authorizeRequests()
+                .antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
+                        "/configuration/security", "/swagger-ui.html", "/webjars/**").permitAll()
                 .antMatchers("/authenticate", "/users/register").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
+//                .authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        httpSecurity.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+        httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
@@ -50,18 +49,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(service);
+        auth.userDetailsService(userService);
     }
 
     @Override
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
-    }
-
-    @Bean
-    public JwtAuthenticationFilter authenticationTokenFilterBean() {
-        return new JwtAuthenticationFilter();
     }
 
 }
