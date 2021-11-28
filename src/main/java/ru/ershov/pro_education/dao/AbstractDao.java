@@ -193,7 +193,10 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         Class<?> c = entity.getClass();
         while (c != null) {
             for (Field field : c.getDeclaredFields()) {
-                if (field.isAnnotationPresent(Column.class) && !field.isAnnotationPresent(Id.class)) {
+                if (field.isAnnotationPresent(Column.class)
+                        && !field.getDeclaredAnnotation(Column.class).onlyRead()
+                        && !field.isAnnotationPresent(Id.class)
+                ) {
                     map.put(field.getDeclaredAnnotation(Column.class).name(), invokeGetter(entity, field.getName()));
                 }
             }

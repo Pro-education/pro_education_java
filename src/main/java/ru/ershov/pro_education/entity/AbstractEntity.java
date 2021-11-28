@@ -23,10 +23,11 @@ public abstract class AbstractEntity {
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(name = "updated_time")
+
+    @Column(name = "updated_time", onlyRead = true)
     private Timestamp updatedTime;
 
-    @Column(name = "create_time")
+    @Column(name = "created_time", onlyRead = true)
     private Timestamp createTime;
 
 }

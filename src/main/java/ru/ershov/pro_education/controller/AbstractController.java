@@ -1,6 +1,7 @@
 package ru.ershov.pro_education.controller;
 
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ public abstract class AbstractController<D, ID extends Number> implements Contro
 
     @Override
     @GetMapping("/{id}")
-    @ApiOperation("Отдает объект по ID")
+    @Operation(description = "Отдает объект по ID")
     public ResponseEntity<D> findById(@PathVariable("id") ID id) {
         return ResponseEntity.ok(service.findById(id));
     }
@@ -30,27 +31,27 @@ public abstract class AbstractController<D, ID extends Number> implements Contro
     @Override
     @PreAuthorize("hasRole('USER')")
     @GetMapping
-    @ApiOperation("Отдает массив объектов")
+    @Operation(description = "Отдает массив объектов")
     public ResponseEntity<List<D>> findAll() {
         return ResponseEntity.ok(service.findAll());
     }
 
     @Override
     @PostMapping
-    @ApiOperation("Добавляет объект")
+    @Operation(description = "Добавляет объект")
     public ResponseEntity<D> insert(@RequestBody D entity) {
         return ResponseEntity.ok(service.insert(entity));
     }
 
     @Override
     @PostMapping("/{id}")
-    @ApiOperation("Обновляет объект")
+    @Operation(description = "Обновляет объект")
     public ResponseEntity<D> update(@PathVariable("id") ID id, @RequestBody D newEntity) {
         return ResponseEntity.ok(service.update(id, newEntity));
     }
 
     @DeleteMapping("/{id}")
-    @ApiOperation("Удаляет объект по ID")
+    @Operation(description = "Удаляет объект по ID")
     public ResponseEntity<Boolean> delete(@PathVariable("id") ID id) {
         return ResponseEntity.ok(service.delete(id));
     }
