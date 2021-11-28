@@ -17,7 +17,7 @@
         <java.version>11</java.version>
         <postgresql.version>42.2.5</postgresql.version>
         <jasypt.version>3.0.2</jasypt.version>
-        <swagger.version>2.9.2</swagger.version>
+        <swagger.version>3.0.0</swagger.version>
         <testcontainers.version>1.15.1</testcontainers.version>
         <postgresql.password>p</postgresql.password>
     </properties>
@@ -70,14 +70,14 @@
         </dependency>
 
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>${swagger.version}</version>
+            <groupId>io.swagger.core.v3</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>2.1.6</version>
         </dependency>
         <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>${swagger.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.5.2</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -113,35 +113,35 @@
 
                 <configuration>
                     <!-- URL to Docker daemon -->
-                    <dockerHost>unix:///var/run/docker.sock</dockerHost>
+<!--                    <dockerHost>unix:///var/run/docker.sock</dockerHost>-->
                     <!-- Configured Docker images -->
                     <images>
                         <!--PostgreSQL image-->
                         <image>
                             <alias>postgres</alias>
-                            <name>postgres:12.4</name>
+                            <name>postgres:12.3</name>
                             <build>
 
-                                <assembly>
-                                    <mode>dir</mode>
-                                    <!-- database startup script -->
-                                    <targetDir>/docker-entrypoint-initdb.d</targetDir>
-                                    <inline>
-                                        <files>
-                                            <file>
-                                                <source>src/main/resources/db/init.sql</source>
-                                            </file>
-                                        </files>
-                                    </inline>
-                                </assembly>
-                                <env>
-                                    <POSTGRES_DB>postgres</POSTGRES_DB>
-                                    <POSTGRES_USER>u</POSTGRES_USER>
-                                    <POSTGRES_PASSWORD>p</POSTGRES_PASSWORD>
-                                </env>
-                                <ports>
-                                    <port>5432/tcp</port>
-                                </ports>
+                                <!--                                <assembly>-->
+                                <!--                                    <mode>dir</mode>-->
+                                <!--                                    &lt;!&ndash; database startup script &ndash;&gt;-->
+                                <!--                                    <targetDir>/docker-entrypoint-initdb.d</targetDir>-->
+                                <!--                                    <inline>-->
+                                <!--                                        <files>-->
+                                <!--                                            <file>-->
+                                <!--                                                <source>src/main/resources/db/init.sql</source>-->
+                                <!--                                            </file>-->
+                                <!--                                        </files>-->
+                                <!--                                    </inline>-->
+                                <!--                                </assembly>-->
+                                <!--                                <env>-->
+                                <!--                                    <POSTGRES_DB>postgres</POSTGRES_DB>-->
+                                <!--                                    <POSTGRES_USER>u</POSTGRES_USER>-->
+                                <!--                                    <POSTGRES_PASSWORD>p</POSTGRES_PASSWORD>-->
+                                <!--                                </env>-->
+                                <!--                                <ports>-->
+                                <!--                                    <port>5432/tcp</port>-->
+                                <!--                                </ports>-->
                             </build>
                             <run>
                                 <env>
@@ -152,12 +152,20 @@
                                 <ports>
                                     <port>5432:5432</port>
                                 </ports>
+                                <volumes>
+                                    <bind>
+                                        <volume>src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
+                                        </volume>
+                                        <volume>src/main/resources/db/fill.sql:/docker-entrypoint-initdb.d/2-fill.sql
+                                        </volume>
+                                        <volume>
+                                            src/main/resources/db/trigger.sql:/docker-entrypoint-initdb.d/3-trigger.sql
+                                        </volume>
+                                    </bind>
+                                </volumes>
                             </run>
                         </image>
                     </images>
-
-                    <!-- If we want to skip tests we should also skip Docker plugin execution -->
-                    <!--                    <skip>${maven.test.skip}</skip>-->
                 </configuration>
 
                 <executions>

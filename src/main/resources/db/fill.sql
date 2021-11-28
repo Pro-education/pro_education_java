@@ -1,6 +1,6 @@
-INSERT INTO "user" (id, username, name, surname, vk_link, email, password, enabled, rating_sum, rating_count)
-VALUES (1, 'username1', 'name1', 'surname1', 'https://vk.com/1', 'email1', 'password1', true, 5, 1),
-       (2, 'username2', 'name2', 'surname2', 'https://vk.com/2', 'email2', 'password2', true, 4, 1);
+INSERT INTO "user" (username, name, surname, vk_link, email, password, enabled, rating_sum, rating_count)
+VALUES ('username1', 'name1', 'surname1', 'https://vk.com/1', 'email1', 'password1', true, 5, 1),
+       ('username2', 'name2', 'surname2', 'https://vk.com/2', 'email2', 'password2', true, 4, 1);
 
 INSERT INTO role (id, name)
 VALUES (1, 'ROLE_USER'),
@@ -53,18 +53,18 @@ VALUES (1, 1),
        (2, 2),
        (3, 2);
 
-INSERT INTO main_homework (id, group_id, name)
+INSERT INTO homework (id, group_id, name)
 VALUES (1, 1, 'homeworks1'),
        (2, 2, 'homeworks2'),
        (3, 1, 'homeworks3');
 
-INSERT INTO main_task (id, text, subject_id, main_homework_id)
+INSERT INTO task (id, text, subject_id, main_homework_id)
 VALUES (1, 'task1', 1, 1),
        (2, 'task2', 2, 1),
        (3, 'task3', 3, 2),
        (4, 'task4', 1, 3);
 
-INSERT INTO individual_task (id, main_task_id, user_id, is_solved)
+INSERT INTO personal_task (id, main_task_id, user_id, is_solved)
 VALUES (1, 1, 1, true),
        (2, 2, 1, true),
        (3, 3, 1, false),
