@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import ru.ershov.pro_education.config.jwt.JwtAuthenticationFilter;
-import ru.ershov.pro_education.service.impl.UserServiceImpl;
+import ru.ershov.pro_education.service.impl.PersonServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] SWAGGER_PATH = {"/v2/api-docs", "/configuration/ui", "/swagger-resources/**",
             "/configuration/security", "/swagger-ui.html", "/webjars/**"};
-    private final UserServiceImpl userService;
+    private final PersonServiceImpl userService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override

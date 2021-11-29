@@ -1,7 +1,6 @@
 package ru.ershov.pro_education.controller.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.ershov.pro_education.config.jwt.TokenProvider;
-import ru.ershov.pro_education.entity.User;
-import ru.ershov.pro_education.service.impl.UserServiceImpl;
+import ru.ershov.pro_education.entity.Person;
+import ru.ershov.pro_education.service.impl.PersonServiceImpl;
 
 import javax.validation.Valid;
 
@@ -26,25 +25,25 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final TokenProvider jwtTokenUtil;
-    private final UserServiceImpl userService;
+    private final PersonServiceImpl userService;
 
     @PostMapping("/register")
     public String registerUser(@RequestBody @Valid RegistrationRequest registrationRequest) {
-        User u = new User();
-        u.setPassword(registrationRequest.getPassword());
-        u.setEmail(registrationRequest.getLogin());
-        u.setEnabled(true);
-        userService.insert(u);
+        Person p = new Person();
+        p.setPassword(registrationRequest.getPassword());
+        p.setEmail(registrationRequest.getLogin());
+        p.setEnabled(true);
+        userService.insert(p);
         return "OK";
     }
 
     @PostMapping(value = "/authenticate")
-    public String generateToken(@RequestBody User loginUser) throws AuthenticationException {
+    public String generateToken(@RequestBody Person loginPerson) throws AuthenticationException {
 
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        loginUser.getEmail(),
-                        loginUser.getPassword()
+                        loginPerson.getEmail(),
+                        loginPerson.getPassword()
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);

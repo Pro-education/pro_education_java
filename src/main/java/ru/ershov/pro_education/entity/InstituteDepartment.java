@@ -12,7 +12,7 @@ import ru.ershov.pro_education.annotation.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "institute_department")
+@Table(name = "institute__department")
 public class InstituteDepartment extends AbstractEntity{
 
     @ManyToOne(clazz = Institute.class)

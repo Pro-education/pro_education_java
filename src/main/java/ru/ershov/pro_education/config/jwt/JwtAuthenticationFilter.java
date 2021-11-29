@@ -24,7 +24,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String HEADER_STRING = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
 
-    @Resource(name = "userServiceImpl")
+    @Resource(name = "personServiceImpl")
     private UserDetailsService userDetailsService;
 
     private final TokenProvider jwtTokenUtil;

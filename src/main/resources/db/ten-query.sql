@@ -2,7 +2,7 @@
 SELECT g.name, count(u.id)
 FROM "group" as g
          join group__user gu on g.id = gu.group_id
-         join "user" u on u.id = gu.users_id
+         join "person" u on u.id = gu.users_id
 GROUP BY g.name
 order by 1;
 
@@ -12,7 +12,7 @@ FROM "group" as g
 where not exists(
         select u.id
         from individual_task it
-                 join "user" u on u.id = it.user_id
+                 join "person" u on u.id = it.user_id
                  join group__user gu on g.id = gu.group_id
         where u.id = gu.users_id
           and not it.is_solved
@@ -20,7 +20,7 @@ where not exists(
 
 -- 3 найти количество задачи не решенные у пользователя в группах (where)
 select u.id, username, count(mt)
-from "user" u
+from "person" u
          join individual_task it on u.id = it.user_id
          join main_task mt on mt.id = it.main_task_id
          join main_homework mh on mt.main_homework_id = mh.id
@@ -34,7 +34,7 @@ from "group" g
 where not exists(
         select u.id
         from group__user gu
-                 join "user" u on u.id = gu.users_id
+                 join "person" u on u.id = gu.users_id
         where g.id = gu.group_id
           and u.rating_sum / u.rating_count < 4
     );
@@ -73,7 +73,7 @@ where 3 < (
 -- 6 среднее значение которое ставит пользователь (order)
 select u.id, username, cast(sum(r.rating) as float4) / count(r.id) as sred
 from review as r
-         join "user" u on u.id = r.user_id
+         join "person" u on u.id = r.user_id
 group by u.id, username
 order by 3 desc;
 
@@ -90,16 +90,16 @@ limit 10;
 SELECT CASE
            WHEN EXISTS(
                    SELECT *
-                   FROM "user"
-                            inner join individual_task it on "user".id = it.user_id
-                   WHERE "user".id = 1)
+                   FROM "person"
+                            inner join individual_task it on "person".id = it.user_id
+                   WHERE "person".id = 1)
                THEN CAST(1 AS bool)
            ELSE CAST(0 AS bool) END;
 
 
 -- 9 пользователи у которые написали отзывы (in inner)
 select username
-from "user"
+from "person"
 where id in (
     select user_id
     from review

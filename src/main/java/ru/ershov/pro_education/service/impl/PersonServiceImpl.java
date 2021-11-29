@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.ershov.pro_education.dao.impl.UsersDaoImpl;
-import ru.ershov.pro_education.entity.User;
+import ru.ershov.pro_education.dao.impl.PersonDaoImpl;
+import ru.ershov.pro_education.entity.Person;
 import ru.ershov.pro_education.exception.not_found.InstituteNotFound;
 import ru.ershov.pro_education.service.CrudService;
 
@@ -16,28 +16,28 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements CrudService<User, Long>, UserDetailsService {
+public class PersonServiceImpl implements CrudService<Person, Long>, UserDetailsService {
 
-    private final UsersDaoImpl usersDao;
+    private final PersonDaoImpl usersDao;
     private final RoleServiceImpl roleService;
 
     @Override
-    public User findById(Long id) {
+    public Person findById(Long id) {
         return usersDao.findById(id).orElseThrow(() -> new InstituteNotFound(id));
     }
 
     @Override
-    public List<User> findAll() {
+    public List<Person> findAll() {
         return usersDao.findAll();
     }
 
     @Override
-    public <S extends User> S insert(S entity) {
+    public <S extends Person> S insert(S entity) {
         return usersDao.insert(entity);
     }
 
     @Override
-    public <S extends User> S update(Long id, S newEntity) {
+    public <S extends Person> S update(Long id, S newEntity) {
         return usersDao.update(id, newEntity);
     }
 
@@ -51,18 +51,18 @@ public class UserServiceImpl implements CrudService<User, Long>, UserDetailsServ
         return usersDao.delete(aLong);
     }
 
-    public User getUser(String email) {
+    public Person getUser(String email) {
         return usersDao.findByEmail(email).orElseThrow();
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = usersDao.findByEmail(email)
+        Person person = usersDao.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email - " + email + " not found."));
-        Set<SimpleGrantedAuthority> rolesByUserId = roleService.getRolesByUserId(user.getId());
+        Set<SimpleGrantedAuthority> rolesByUserId = roleService.getRolesByUserId(person.getId());
         System.out.println(rolesByUserId);
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(), user.getPassword(), true, true, true,
+                person.getEmail(), person.getPassword(), true, true, true,
                 true, rolesByUserId);
     }
 }
