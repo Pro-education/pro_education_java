@@ -119,7 +119,7 @@
                         <!--PostgreSQL image-->
                         <image>
                             <alias>postgres</alias>
-                            <name>postgres:12.3</name>
+                            <name>postgres:13.3</name>
                             <build>
 
                                 <!--                                <assembly>-->

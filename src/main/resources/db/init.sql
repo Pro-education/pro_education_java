@@ -50,10 +50,10 @@ CREATE TABLE institute__department
     UNIQUE (department_id, institute_id)
 );
 
-CREATE TABLE "group"
+CREATE TABLE team
 (
     id           BIGSERIAL PRIMARY KEY,
-    headman      bigint,
+    headman_id   bigint,
     direction_id bigint,
     name         text,
     vk_link      text,
@@ -61,7 +61,7 @@ CREATE TABLE "group"
     updated_time timestamp
 );
 
-CREATE TABLE "user"
+CREATE TABLE person
 (
     id           BIGSERIAL PRIMARY KEY,
     username     text,
@@ -85,30 +85,30 @@ CREATE TABLE role
     updated_time timestamp
 );
 
-CREATE TABLE user__role
+CREATE TABLE person__role
 (
     id           BIGSERIAL PRIMARY KEY,
     role_id      bigint,
-    user_id      bigint,
+    person_id    bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp,
-    UNIQUE (role_id, user_id)
+    UNIQUE (role_id, person_id)
 );
 
-CREATE TABLE group__user
+CREATE TABLE team__person
 (
     id           BIGSERIAL PRIMARY KEY,
-    group_id     bigint,
-    users_id     bigint,
+    team_id      bigint,
+    person_id    bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp,
-    UNIQUE (group_id, users_id)
+    UNIQUE (team_id, person_id)
 );
 
 CREATE TABLE review
 (
     id           BIGSERIAL PRIMARY KEY,
-    user_id      bigint,
+    person_id    bigint,
     status_id    bigint,
     table_id     bigint,
     table_name   text,
@@ -140,7 +140,7 @@ CREATE TABLE review_tag
 CREATE TABLE homework
 (
     id           BIGSERIAL PRIMARY KEY,
-    group_id     bigint,
+    team_id      bigint,
     name         text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
@@ -151,7 +151,7 @@ CREATE TABLE task
     id               BIGSERIAL PRIMARY KEY,
     text             text,
     subject_id       bigint,
-    main_homework_id bigint,
+    homework_id      bigint,
     created_time     timestamp default (current_timestamp),
     updated_time     timestamp
 );
@@ -159,8 +159,8 @@ CREATE TABLE task
 CREATE TABLE personal_task
 (
     id           BIGSERIAL PRIMARY KEY,
-    main_task_id bigint,
-    user_id      bigint,
+    task_id      bigint,
+    person_id    bigint,
     is_solved    boolean,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
@@ -178,7 +178,7 @@ CREATE TABLE discussion
 (
     id           BIGSERIAL PRIMARY KEY,
     review_id    bigint,
-    user_id      bigint,
+    person_id    bigint,
     text         text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
@@ -205,26 +205,26 @@ ALTER TABLE institute__department
 ALTER TABLE institute__department
     ADD FOREIGN KEY (institute_id) REFERENCES institute (id);
 
-ALTER TABLE "group"
-    ADD FOREIGN KEY (headman) REFERENCES "user" (id);
+ALTER TABLE team
+    ADD FOREIGN KEY (headman_id) REFERENCES person (id);
 
-ALTER TABLE "group"
+ALTER TABLE team
     ADD FOREIGN KEY (direction_id) REFERENCES direction (id);
 
-ALTER TABLE user__role
+ALTER TABLE person__role
     ADD FOREIGN KEY (role_id) REFERENCES role (id);
 
-ALTER TABLE user__role
-    ADD FOREIGN KEY (user_id) REFERENCES "user" (id);
+ALTER TABLE person__role
+    ADD FOREIGN KEY (person_id) REFERENCES person (id);
 
-ALTER TABLE group__user
-    ADD FOREIGN KEY (group_id) REFERENCES "group" (id);
+ALTER TABLE team__person
+    ADD FOREIGN KEY (team_id) REFERENCES team (id);
 
-ALTER TABLE group__user
-    ADD FOREIGN KEY (users_id) REFERENCES "user" (id);
+ALTER TABLE team__person
+    ADD FOREIGN KEY (person_id) REFERENCES person (id);
 
 ALTER TABLE review
-    ADD FOREIGN KEY (user_id) REFERENCES "user" (id);
+    ADD FOREIGN KEY (person_id) REFERENCES person (id);
 
 ALTER TABLE review
     ADD FOREIGN KEY (status_id) REFERENCES status (id);
@@ -236,25 +236,25 @@ ALTER TABLE review_tag
     ADD FOREIGN KEY (tag_id) REFERENCES tag (id);
 
 ALTER TABLE homework
-    ADD FOREIGN KEY (group_id) REFERENCES "group" (id);
+    ADD FOREIGN KEY (team_id) REFERENCES team (id);
 
 ALTER TABLE task
     ADD FOREIGN KEY (subject_id) REFERENCES subject (id);
 
 ALTER TABLE task
-    ADD FOREIGN KEY (main_homework_id) REFERENCES homework (id);
+    ADD FOREIGN KEY (homework_id) REFERENCES homework (id);
 
 ALTER TABLE personal_task
-    ADD FOREIGN KEY (main_task_id) REFERENCES task (id);
+    ADD FOREIGN KEY (task_id) REFERENCES task (id);
 
 ALTER TABLE personal_task
-    ADD FOREIGN KEY (user_id) REFERENCES "user" (id);
+    ADD FOREIGN KEY (person_id) REFERENCES person (id);
 
 ALTER TABLE discussion
     ADD FOREIGN KEY (review_id) REFERENCES review (id);
 
 ALTER TABLE discussion
-    ADD FOREIGN KEY (user_id) REFERENCES "user" (id);
+    ADD FOREIGN KEY (person_id) REFERENCES person (id);
 
 ALTER TABLE subject
     ADD FOREIGN KEY (direction_id) REFERENCES direction (id);

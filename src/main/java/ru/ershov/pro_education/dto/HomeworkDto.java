@@ -13,17 +13,11 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class DirectionDto extends AbstractDto{
+public class HomeworkDto extends AbstractDto {
+
+    @NotEmpty
+    private Long groupId;
 
     @NotBlank
     private String name;
-
-    @NotBlank
-    private String number;
-
-    @NotEmpty
-    private Long departmentId;
-
-    @NotBlank
-    private String vkLink;
 }

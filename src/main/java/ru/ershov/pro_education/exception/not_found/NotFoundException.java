@@ -8,7 +8,11 @@ public class NotFoundException extends RuntimeException {
     enum NameEntity {
         INSTITUTE("Institute"),
         DIRECTION("Direction"),
-        SUBJECT("Subject");
+        SUBJECT("Subject"),
+        GROUP("Group"),
+        HOMEWORK("Homework"),
+        TASK("Task"),
+        PERSONAL_TASK("Personal task");
 
         private String name;
 

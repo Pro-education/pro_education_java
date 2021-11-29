@@ -8,14 +8,14 @@ import ru.ershov.pro_education.annotation.Table;
 
 @Getter
 @Setter
-@Table(name = "users__role")
-public class UserRole extends AbstractEntity {
+@Table(name = "person__role")
+public class PersonRole extends AbstractEntity {
 
     @ManyToOne(clazz = Role.class)
     @Column(name = "role_id")
     private Long roleId;
 
-    @ManyToOne(clazz = User.class)
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne(clazz = Person.class)
+    @Column(name = "person_id")
+    private Long personId;
 }
