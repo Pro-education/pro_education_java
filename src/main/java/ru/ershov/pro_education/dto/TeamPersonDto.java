@@ -1,9 +1,9 @@
 package ru.ershov.pro_education.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
@@ -12,18 +12,13 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class TeamDto extends AbstractDto{
+public class TeamPersonDto extends AbstractDto {
 
     @NotEmpty
-    private Long headman;
+//    @JsonProperty("team_id")
+    private Long teamId;
 
     @NotEmpty
-    private Long directionId;
-
-    @NotBlank
-    private String name;
-
-    @NotBlank
-    private String vkLink;
-
+//    @JsonProperty("person_id")
+    private Long personId;
 }

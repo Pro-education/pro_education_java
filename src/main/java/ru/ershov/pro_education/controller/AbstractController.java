@@ -1,14 +1,8 @@
 package ru.ershov.pro_education.controller;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 import ru.ershov.pro_education.service.CrudService;
 
 import java.util.List;
@@ -44,7 +38,7 @@ public abstract class AbstractController<D, ID extends Number> implements Contro
     }
 
     @Override
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(description = "Обновляет объект")
     public ResponseEntity<D> update(@PathVariable("id") ID id, @RequestBody D newEntity) {
         return ResponseEntity.ok(service.update(id, newEntity));

@@ -12,7 +12,8 @@ public class NotFoundException extends RuntimeException {
         GROUP("Group"),
         HOMEWORK("Homework"),
         TASK("Task"),
-        PERSONAL_TASK("Personal task");
+        PERSONAL_TASK("Personal task"),
+        TEAM__PERSON("Team/Person");
 
         private String name;
 

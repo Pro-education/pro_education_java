@@ -9,19 +9,16 @@ import ru.ershov.pro_education.annotation.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "personal_task")
+@Table(name = "team__person")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class PersonalTask extends AbstractEntity {
+public class TeamPerson extends AbstractEntity {
 
-    @ManyToOne(clazz = Task.class)
-    @Column(name = "task_id")
-    private Long taskId;
+    @ManyToOne(clazz = Team.class)
+    @Column(name = "team_id")
+    private Long teamId;
 
     @ManyToOne(clazz = Person.class)
     @Column(name = "person_id")
     private Long personId;
-
-    @Column(name = "is_solved")
-    private Boolean isSolved;
 
 }
