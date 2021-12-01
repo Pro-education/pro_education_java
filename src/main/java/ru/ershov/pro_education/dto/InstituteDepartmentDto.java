@@ -11,6 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class InstituteDepartmentDto extends AbstractDto {
 
     @NotEmpty

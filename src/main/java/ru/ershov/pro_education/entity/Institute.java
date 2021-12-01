@@ -1,16 +1,16 @@
 package ru.ershov.pro_education.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.ManyToOne;
 import ru.ershov.pro_education.annotation.Table;
 
 @Getter
 @Setter
-@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "institute")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Institute extends AbstractEntity {
 
     @Column(name = "short_name")

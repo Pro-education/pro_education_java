@@ -7,16 +7,15 @@ import ru.ershov.pro_education.annotation.Table;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "homework")
-@ToString
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Homework extends AbstractEntity{
 
     @ManyToOne(clazz = Team.class)
-    @Column(name = "group_id")
-    private Long groupId;
+    @Column(name = "team_id")
+    private Long teamId;
 
     @Column(name = "name")
     private String name;

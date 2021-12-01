@@ -7,9 +7,8 @@ import ru.ershov.pro_education.annotation.Table;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @Table(name = "direction")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Direction extends AbstractEntity {

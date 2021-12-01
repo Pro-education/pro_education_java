@@ -8,9 +8,8 @@ import ru.ershov.pro_education.annotation.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 @Table(name = "department")
+@EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Department extends AbstractEntity {
 
     @Column(name = "short_name")
