@@ -1,4 +1,4 @@
-package ru.ershov.pro_education.controller.impl;
+package ru.ershov.pro_education.exception.handler;
 
 import lombok.Getter;
 import org.springframework.security.core.AuthenticationException;
@@ -16,7 +16,11 @@ import javax.servlet.http.HttpServletResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler({AuthenticationException.class, MissingCsrfTokenException.class, InvalidCsrfTokenException.class, SessionAuthenticationException.class})
+    @ExceptionHandler({
+            AuthenticationException.class,
+            MissingCsrfTokenException.class,
+            InvalidCsrfTokenException.class, 
+            SessionAuthenticationException.class})
     public ErrorInfo handleAuthenticationException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response){
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.authorization");

@@ -19,32 +19,34 @@ public class InstituteDepartmentServiceImpl extends AbstractCrudService<Institut
     private final DepartmentServiceImpl departmentService;
     private final InstituteServiceImpl instituteService;
 
-    InstituteDepartmentServiceImpl(InstituteDepartmentDaoImpl instituteDepartmentDao,
-                                   InstituteDepartmentMapper instituteDepartmentMapper,
-                                   DepartmentServiceImpl departmentService,
-                                   InstituteServiceImpl instituteService) {
+    InstituteDepartmentServiceImpl(
+            InstituteDepartmentDaoImpl instituteDepartmentDao,
+            InstituteDepartmentMapper instituteDepartmentMapper,
+            DepartmentServiceImpl departmentService,
+            InstituteServiceImpl instituteService
+    ) {
         super(instituteDepartmentDao, instituteDepartmentMapper, RuntimeException.class);
         this.instituteDepartmentDao = instituteDepartmentDao;
         this.departmentService = departmentService;
         this.instituteService = instituteService;
     }
 
-    public void connect(Long instituteId, Long departmentId){
+    public void connect(Long instituteId, Long departmentId) {
         InstituteDepartment instituteDepartment = new InstituteDepartment(instituteId, departmentId);
         instituteDepartmentDao.insert(instituteDepartment);
     }
 
     public List<DepartmentDto> findAllByInstituteId(Long instituteId){
-        return instituteDepartmentDao.findAllByInstituteId(instituteId)
+        return instituteDepartmentDao.findAllDepartmentsByInstituteId(instituteId)
                 .stream()
-                .map(instituteDepartment -> departmentService.findById(instituteDepartment.getDepartmentId()))
+                .map(departmentService::findById)
                 .collect(Collectors.toList());
     }
 
     public List<InstituteDto> findAllByDepartmentId(Long departmentId){
-        return instituteDepartmentDao.findAllByDepartmentId(departmentId)
+        return instituteDepartmentDao.findAllInstitutesByDepartmentId(departmentId)
                 .stream()
-                .map(instituteDepartment -> instituteService.findById(instituteDepartment.getInstituteId()))
+                .map(instituteService::findById)
                 .collect(Collectors.toList());
     }
 }

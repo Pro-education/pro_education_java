@@ -1,5 +1,7 @@
 package ru.ershov.pro_education.mapper;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ershov.pro_education.dto.AbstractDto;
@@ -12,16 +14,20 @@ public abstract class AbstractMapper<E extends AbstractEntity, D extends Abstrac
     private final Class<E> entityClass;
     private final Class<D> dtoClass;
 
+    @Getter
+    @Setter
     @Autowired
     private ModelMapper mapper;
-
-    protected void setMapper(ModelMapper mapper) {
-        this.mapper = mapper;
-    }
 
     protected AbstractMapper(Class<E> entityClass, Class<D> dtoClass) {
         this.entityClass = entityClass;
         this.dtoClass = dtoClass;
+    }
+
+    protected AbstractMapper(Class<E> entityClass, Class<D> dtoClass, ModelMapper mapper) {
+        this.entityClass = entityClass;
+        this.dtoClass = dtoClass;
+        this.mapper = mapper;
     }
 
     @Override

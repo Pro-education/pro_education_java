@@ -1,19 +1,18 @@
 package ru.ershov.pro_education.controller;
 
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import ru.ershov.pro_education.dto.AbstractDto;
 import ru.ershov.pro_education.service.CrudService;
 
 import java.util.List;
 
-public abstract class AbstractController<D, ID extends Number> implements Controller<D, ID> {
+public abstract class AbstractController<D extends AbstractDto, ID extends Number> implements Controller<D, ID> {
 
     protected final CrudService<D, ID> service;
 

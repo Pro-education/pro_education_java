@@ -6,6 +6,7 @@ CREATE TABLE university
     vk_link      text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
+
 );
 
 CREATE TABLE institute
@@ -114,7 +115,7 @@ CREATE TABLE review
     table_name   text,
     text         text,
     rating       int,
-    create_time  timestamp DEFAULT (current_timestamp),
+    created_time  timestamp DEFAULT (current_timestamp),
     updated_time timestamp
 );
 
@@ -127,7 +128,7 @@ CREATE TABLE tag
     updated_time timestamp
 );
 
-CREATE TABLE review_tag
+CREATE TABLE review__tag
 (
     id           BIGSERIAL PRIMARY KEY,
     review_id    bigint,
@@ -169,7 +170,7 @@ CREATE TABLE personal_task
 CREATE TABLE status
 (
     id           BIGSERIAL PRIMARY KEY,
-    status       text,
+    name       text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
 );
@@ -229,10 +230,10 @@ ALTER TABLE review
 ALTER TABLE review
     ADD FOREIGN KEY (status_id) REFERENCES status (id);
 
-ALTER TABLE review_tag
+ALTER TABLE review__tag
     ADD FOREIGN KEY (review_id) REFERENCES review (id);
 
-ALTER TABLE review_tag
+ALTER TABLE review__tag
     ADD FOREIGN KEY (tag_id) REFERENCES tag (id);
 
 ALTER TABLE homework

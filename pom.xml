@@ -89,6 +89,15 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
             <version>3.0.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>1.15.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -105,45 +114,53 @@
                     </excludes>
                 </configuration>
             </plugin>
-
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                </configuration>
+                <!--                <configuration>-->
+                <!--                    <environmentVariables>-->
+                <!--                        <it-database.port>${it-database.port}</it-database.port>-->
+                <!--                    </environmentVariables>-->
+                <!--                </configuration>-->
+            </plugin>
             <plugin>
                 <groupId>io.fabric8</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>0.33.0</version>
 
                 <configuration>
-                    <!-- URL to Docker daemon -->
-<!--                    <dockerHost>unix:///var/run/docker.sock</dockerHost>-->
+
                     <!-- Configured Docker images -->
                     <images>
                         <!--PostgreSQL image-->
                         <image>
-                            <alias>postgres</alias>
+                            <alias>db</alias>
                             <name>postgres:13.3</name>
-                            <build>
-
-                                <!--                                <assembly>-->
-                                <!--                                    <mode>dir</mode>-->
-                                <!--                                    &lt;!&ndash; database startup script &ndash;&gt;-->
-                                <!--                                    <targetDir>/docker-entrypoint-initdb.d</targetDir>-->
-                                <!--                                    <inline>-->
-                                <!--                                        <files>-->
-                                <!--                                            <file>-->
-                                <!--                                                <source>src/main/resources/db/init.sql</source>-->
-                                <!--                                            </file>-->
-                                <!--                                        </files>-->
-                                <!--                                    </inline>-->
-                                <!--                                </assembly>-->
-                                <!--                                <env>-->
-                                <!--                                    <POSTGRES_DB>postgres</POSTGRES_DB>-->
-                                <!--                                    <POSTGRES_USER>u</POSTGRES_USER>-->
-                                <!--                                    <POSTGRES_PASSWORD>p</POSTGRES_PASSWORD>-->
-                                <!--                                </env>-->
-                                <!--                                <ports>-->
-                                <!--                                    <port>5432/tcp</port>-->
-                                <!--                                </ports>-->
-                            </build>
+<!--                            <build>-->
+<!--                                <env>-->
+<!--                                    <POSTGRES_DB>postgres</POSTGRES_DB>-->
+<!--                                    <POSTGRES_USER>u</POSTGRES_USER>-->
+<!--                                    <POSTGRES_PASSWORD>p</POSTGRES_PASSWORD>-->
+<!--                                </env>-->
+<!--                                <ports>-->
+<!--                                    <port>5432</port>-->
+<!--                                </ports>-->
+<!--                            </build>-->
                             <run>
+                                <containerNamePattern>%a</containerNamePattern>
                                 <env>
                                     <POSTGRES_DB>postgres</POSTGRES_DB>
                                     <POSTGRES_USER>u</POSTGRES_USER>
@@ -154,33 +171,97 @@
                                 </ports>
                                 <volumes>
                                     <bind>
-                                        <volume>src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/1-init.sql
+                                        <volume>
+                                            src/main/resources/db/migration/V1__V1__init.sql:/docker-entrypoint-initdb.d/1-V1__init.sql
                                         </volume>
-                                        <volume>src/main/resources/db/fill.sql:/docker-entrypoint-initdb.d/2-fill.sql
+                                        <volume>src/main/resources/db/migration/V2__V2__fill.sql:/docker-entrypoint-initdb.d/2-V2__fill.sql
                                         </volume>
                                         <volume>
-                                            src/main/resources/db/trigger.sql:/docker-entrypoint-initdb.d/3-trigger.sql
+                                            src/main/resources/db/migration/V3__V3__trigger.sql:/docker-entrypoint-initdb.d/3-V3__trigger.sql
                                         </volume>
                                     </bind>
                                 </volumes>
                             </run>
                         </image>
+                        <image>
+                            <!-- Replace your-project-name -->
+                            <name>${project.name}:${project.version}</name>
+
+                            <build>
+                                <!-- This is the same FROM used in a Dockerfile -->
+                                <from>openjdk:11</from>
+
+                                <!-- This is the same ENTRYPOINT used in a Dockerfile -->
+                                <entryPoint>
+                                    <exec>
+                                        <arg>java</arg>
+                                        <!-- This extra argument is so Tomcat can start faster due to lack of entropy -->
+                                        <!--                                        <arg>-Djava.security.egd=file:/dev/./urandom</arg>-->
+                                        <arg>-jar</arg>
+                                        <!-- /maven/ is the default dir that the plugin copies your artifact to -->
+                                        <!--                                        <arg>/maven/${project.artifactId}.${project.packaging}</arg>-->
+                                        <arg>/maven/pro_education-0.0.1-SNAPSHOT.jar</arg>
+                                        <!--                                        pro_education-0.0.1-SNAPSHOT.jar-->
+                                    </exec>
+                                </entryPoint>
+
+                                <assembly>
+                                    <!-- This is a predefined assembly.xml that will only copy your final artifact to the Docker image -->
+                                    <descriptorRef>artifact</descriptorRef>
+                                </assembly>
+                            </build>
+                        </image>
+
                     </images>
                 </configuration>
 
                 <executions>
                     <execution>
-                        <!-- start Docker -->
-                        <id>start</id>
+                        <id>prepare-it-database</id>
                         <phase>pre-integration-test</phase>
                         <goals>
-                            <goal>build</goal>
                             <goal>start</goal>
                         </goals>
+                        <configuration>
+                            <images>
+                                <image>
+                                    <name>postgres:13.3</name>
+                                    <alias>it-database</alias>
+                                    <run>
+                                        <env>
+                                            <POSTGRES_DB>postgres</POSTGRES_DB>
+                                            <POSTGRES_USER>postgres</POSTGRES_USER>
+                                            <POSTGRES_PASSWORD>postgres</POSTGRES_PASSWORD>
+                                        </env>
+                                        <ports>
+                                            <port>5432:5432</port>
+                                        </ports>
+                                        <wait>
+                                            <log>(?s)database system is ready to accept connections.*database system is
+                                                ready to accept connections
+                                            </log>
+                                            <time>10000</time>
+                                        </wait>
+                                        <volumes>
+                                            <bind>
+                                                <volume>
+                                                    src/main/resources/db/migration/V1__init.sql:/docker-entrypoint-initdb.d/1-V1__init.sql
+                                                </volume>
+                                                <volume>
+                                                    src/main/resources/db/migration/V2__fill.sql:/docker-entrypoint-initdb.d/2-V2__fill.sql
+                                                </volume>
+                                                <volume>
+                                                    src/main/resources/db/migration/V3__trigger.sql:/docker-entrypoint-initdb.d/3-V3__trigger.sql
+                                                </volume>
+                                            </bind>
+                                        </volumes>
+                                    </run>
+                                </image>
+                            </images>
+                        </configuration>
                     </execution>
                     <execution>
-                        <!-- stop Docker -->
-                        <id>stop</id>
+                        <id>remove-it-database</id>
                         <phase>post-integration-test</phase>
                         <goals>
                             <goal>stop</goal>
@@ -188,7 +269,6 @@
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
 

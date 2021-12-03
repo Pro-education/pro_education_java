@@ -8,6 +8,7 @@ import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.entity.InstituteDepartment;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class InstituteDepartmentDaoImpl extends AbstractDao<InstituteDepartment, Long> {
@@ -16,11 +17,15 @@ public class InstituteDepartmentDaoImpl extends AbstractDao<InstituteDepartment,
         super(jdbcTemplate, InstituteDepartment.class);
     }
 
-    public List<InstituteDepartment> findAllByInstituteId(Long instituteId){
-        return getAllFromParent(instituteId, Institute.class);
+    public List<Long> findAllDepartmentsByInstituteId(Long instituteId){
+        return getAllFromParent(instituteId, Institute.class).stream()
+                .map(InstituteDepartment::getDepartmentId)
+                .collect(Collectors.toList());
     }
 
-    public List<InstituteDepartment> findAllByDepartmentId(Long departmentId){
-        return getAllFromParent(departmentId, Department.class);
+    public List<Long> findAllInstitutesByDepartmentId(Long departmentId){
+        return getAllFromParent(departmentId, Department.class).stream()
+                .map(InstituteDepartment::getInstituteId)
+                .collect(Collectors.toList());
     }
 }

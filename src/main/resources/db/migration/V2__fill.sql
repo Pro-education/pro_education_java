@@ -71,7 +71,7 @@ VALUES (1, 1, true),
        (3, 2, false),
        (4, 2, true);
 
-INSERT INTO status (status)
+INSERT INTO status (name)
 VALUES ('на проверке'),
        ('прошел валидацию'),
        ('отказан');
@@ -88,7 +88,7 @@ INSERT INTO tag (text, color)
 VALUES ('tag1', 'color1'),
        ('tag2', 'color2');
 
-INSERT INTO review_tag (review_id, tag_id)
+INSERT INTO review__tag (review_id, tag_id)
 VALUES (1, 1),
        (2, 2),
        (1, 2);

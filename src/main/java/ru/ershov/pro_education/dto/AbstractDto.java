@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
-import ru.ershov.pro_education.annotation.Column;
 
 import javax.validation.constraints.Null;
 import java.io.Serializable;
@@ -27,11 +26,13 @@ public abstract class AbstractDto implements Serializable {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-//    @Null
-//    @JsonProperty("updated_time")
-//    private Timestamp updatedTime;
-//
-//    @Null
-//    @JsonProperty("create_time")
-//    private Timestamp createTime;
+    @Null
+    @JsonProperty("updated_time")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private Timestamp updatedTime;
+
+    @Null
+    @JsonProperty("created_time")
+    @Schema(accessMode = Schema.AccessMode.READ_ONLY)
+    private Timestamp createTime;
 }
