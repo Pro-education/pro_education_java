@@ -10,7 +10,7 @@ import ru.ershov.pro_education.service.impl.TeamPersonServiceImpl;
 import ru.ershov.pro_education.service.impl.TeamServiceImpl;
 
 @RestController
-@RequestMapping("/team")
+@RequestMapping("/api/team")
 public class TeamController extends AbstractController<TeamDto, Long> {
     private final TeamPersonServiceImpl teamPersonService;
 

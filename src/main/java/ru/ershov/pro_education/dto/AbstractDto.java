@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
-import ru.ershov.pro_education.annotation.Column;
 
 import javax.validation.constraints.Null;
 import java.io.Serializable;
