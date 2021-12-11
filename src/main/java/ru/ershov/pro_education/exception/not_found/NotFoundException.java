@@ -17,6 +17,7 @@ public class NotFoundException extends RuntimeException {
         REVIEW("Review"),
         STATUS("Status"),
         DISCUSSION("Discussion");
+        TEAM__PERSON("Team/Person");
 
         private final String name;
 

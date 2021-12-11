@@ -43,7 +43,7 @@ public abstract class AbstractController<D extends AbstractDto, ID extends Numbe
     }
 
     @Override
-    @PostMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(description = "Обновляет объект")
     public ResponseEntity<D> update(@PathVariable("id") ID id, @RequestBody D newEntity) {
         return ResponseEntity.ok(service.update(id, newEntity));

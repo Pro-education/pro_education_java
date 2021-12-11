@@ -34,5 +34,5 @@ public abstract class AbstractDto implements Serializable {
     @Null
     @JsonProperty("created_time")
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
-    private Timestamp createTime;
+    private Timestamp createdTime;
 }

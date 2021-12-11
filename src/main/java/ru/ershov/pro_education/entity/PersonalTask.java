@@ -1,16 +1,19 @@
 package ru.ershov.pro_education.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.ManyToOne;
 import ru.ershov.pro_education.annotation.Table;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "personal_task")
-@ToString
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class PersonalTask extends AbstractEntity {
 

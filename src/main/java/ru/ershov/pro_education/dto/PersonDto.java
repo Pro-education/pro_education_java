@@ -1,46 +1,46 @@
-package ru.ershov.pro_education.entity;
+package ru.ershov.pro_education.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
-import ru.ershov.pro_education.annotation.Column;
-import ru.ershov.pro_education.annotation.Table;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
+@Validated
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "person")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class Person extends AbstractEntity {
+public class PersonDto extends AbstractDto {
 
-    @Column(name = "username")
+    @NotBlank
     private String username;
 
-    @Column(name = "name")
+    @NotBlank
     private String name;
 
-    @Column(name = "surname")
+    @NotBlank
     private String surname;
 
-    @Column(name = "vk_link")
+    @NotBlank
     private String vkLink;
 
-    @Column(name = "email")
+    @NotBlank
     private String email;
 
-    @Column(name = "password")
+    @NotBlank
     private String password;
 
-    @Column(name = "enabled")
+    @NotBlank
     private Boolean enabled;
 
-    @Column(name = "rating_sum")
+    @NotBlank
     private String ratingSum;
 
-    @Column(name = "rating_count")
+    @NotBlank
     private String ratingCount;
-
 }

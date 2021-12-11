@@ -18,46 +18,46 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class PersonServiceImpl implements CrudService<Person, Long>, UserDetailsService {
 
-    private final PersonDaoImpl usersDao;
+    private final PersonDaoImpl personDao;
     private final RoleServiceImpl roleService;
 
     @Override
     public Person findById(Long id) {
-        return usersDao.findById(id).orElseThrow(() -> new InstituteNotFound(id));
+        return personDao.findById(id).orElseThrow(() -> new InstituteNotFound(id));
     }
 
     @Override
     public List<Person> findAll() {
-        return usersDao.findAll();
+        return personDao.findAll();
     }
 
     @Override
     public <S extends Person> S insert(S entity) {
-        return usersDao.insert(entity);
+        return personDao.insert(entity);
     }
 
     @Override
     public <S extends Person> S update(Long id, S newEntity) {
-        return usersDao.update(id, newEntity);
+        return personDao.update(id, newEntity);
     }
 
     @Override
     public boolean existById(Long id) {
-        return usersDao.existById(id);
+        return personDao.existById(id);
     }
 
     @Override
     public boolean delete(Long aLong) {
-        return usersDao.delete(aLong);
+        return personDao.delete(aLong);
     }
 
     public Person getUser(String email) {
-        return usersDao.findByEmail(email).orElseThrow();
+        return personDao.findByEmail(email).orElseThrow();
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Person person = usersDao.findByEmail(email)
+        Person person = personDao.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("User with email - " + email + " not found."));
         Set<SimpleGrantedAuthority> rolesByUserId = roleService.getRolesByUserId(person.getId());
         System.out.println(rolesByUserId);

@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.EqualsAndHashCode;
 import org.springframework.validation.annotation.Validated;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 
 @Getter
@@ -16,11 +15,11 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class SubjectDto extends AbstractDto {
-
-    @NotBlank
-    private String name;
+public class TeamPersonDto extends AbstractDto {
 
     @NotEmpty
-    private Long directionId;
+    private Long teamId;
+
+    @NotEmpty
+    private Long personId;
 }

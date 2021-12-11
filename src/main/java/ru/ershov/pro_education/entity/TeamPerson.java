@@ -13,20 +13,16 @@ import ru.ershov.pro_education.annotation.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "direction")
+@Table(name = "team__person")
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-public class Direction extends AbstractEntity {
+public class TeamPerson extends AbstractEntity {
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne(clazz = Team.class)
+    @Column(name = "team_id")
+    private Long teamId;
 
-    @Column(name = "number")
-    private String number;
+    @ManyToOne(clazz = Person.class)
+    @Column(name = "person_id")
+    private Long personId;
 
-    @Column(name = "vk_link")
-    private String vkLink;
-
-    @ManyToOne(clazz = Department.class)
-    @Column(name = "department_id")
-    private Long departmentId;
 }

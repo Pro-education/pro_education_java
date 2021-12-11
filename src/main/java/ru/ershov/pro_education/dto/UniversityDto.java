@@ -1,15 +1,17 @@
 package ru.ershov.pro_education.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
 import org.springframework.validation.annotation.Validated;
-import ru.ershov.pro_education.annotation.Column;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
 @Validated
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
