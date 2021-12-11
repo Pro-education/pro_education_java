@@ -13,7 +13,7 @@ import ru.ershov.pro_education.service.impl.UniversityServiceImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/university")
+@RequestMapping("/api/university")
 public class UniversityController extends AbstractController<UniversityDto, Long> {
 
     private final UniversityServiceImpl universityService;

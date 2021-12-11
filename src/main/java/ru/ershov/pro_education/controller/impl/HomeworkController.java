@@ -7,7 +7,7 @@ import ru.ershov.pro_education.dto.HomeworkDto;
 import ru.ershov.pro_education.service.impl.HomeworkServiceImpl;
 
 @RestController
-@RequestMapping("/homework")
+@RequestMapping("/api/homework")
 public class HomeworkController extends AbstractController<HomeworkDto, Long> {
     HomeworkController(HomeworkServiceImpl homeworkService) {
         super(homeworkService);

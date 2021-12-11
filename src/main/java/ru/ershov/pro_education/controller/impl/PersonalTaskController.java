@@ -7,7 +7,7 @@ import ru.ershov.pro_education.dto.PersonalTaskDto;
 import ru.ershov.pro_education.service.impl.PersonalTaskServiceImpl;
 
 @RestController
-@RequestMapping("/personal_task")
+@RequestMapping("/api/personal_task")
 public class PersonalTaskController extends AbstractController<PersonalTaskDto, Long> {
     PersonalTaskController(PersonalTaskServiceImpl personalTaskService) {
         super(personalTaskService);
