@@ -47,6 +47,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
     protected final NamedParameterJdbcTemplate jdbcTemplate;
     private final Class<T> tableClass;
     private final String selectPattern;
+    private final String existPattern;
     private final String insertPattern;
     private final String updatePattern;
     private final String deletePattern;
@@ -55,7 +56,8 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
     protected AbstractDao(NamedParameterJdbcTemplate jdbcTemplate, Class<T> tableClass) {
         this.jdbcTemplate = jdbcTemplate;
         this.tableClass = tableClass;
-        selectPattern = "SELECT %s FROM %s ";
+        selectPattern = "SELECT %s FROM " + getTableName() + " ";
+        existPattern = "SELECT count(*) FROM " + getTableName() + " ";
         insertPattern = "INSERT INTO " + getTableName() + " (%s) VALUES ('%s');";
         updatePattern = "UPDATE " + getTableName() + " %s WHERE %s = %s;";
         deletePattern = "DELETE FROM " + getTableName() + " WHERE %s = %s;";
@@ -87,8 +89,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
     }
 
     protected String getBaseSqlQuery() {
-        String name = getTableName();
-        return String.format(selectPattern, findColumnAndIdDbName(), name);
+        return String.format(selectPattern, findColumnAndIdDbName());
     }
 
     public String getTableName() {
@@ -97,11 +98,11 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
 
     @Override
     public boolean existById(ID id) {
-        String sql = getBaseSqlQuery() + WHERE_ADDER;
+        String sql = existPattern + WHERE_ADDER;
         MapSqlParameterSource mapSqlParameterSource =
                 new MapSqlParameterSource("id", id);
-        T t = jdbcTemplate.queryForObject(sql, mapSqlParameterSource, getRowMapper());
-        return t != null;
+        Integer t = jdbcTemplate.queryForObject(sql, mapSqlParameterSource, Integer.class);
+        return t > 0;
     }
 
     @Override

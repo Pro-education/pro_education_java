@@ -9,8 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import ru.ershov.pro_education.config.ModelMapperConfig;
 import ru.ershov.pro_education.dao.AbstractDao;
 import ru.ershov.pro_education.dto.AbstractDto;
@@ -27,9 +25,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
 @ExtendWith({MockitoExtension.class})
-class AbstractCrudServiceTestIT {
+class AbstractCrudServiceTest {
 
     private final ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
 

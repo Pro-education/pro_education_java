@@ -1,6 +1,6 @@
 CREATE TABLE university
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     short_name   text,
     full_name    text,
     vk_link      text,
@@ -11,7 +11,7 @@ CREATE TABLE university
 
 CREATE TABLE institute
 (
-    id            BIGSERIAL PRIMARY KEY,
+    id            BIGINT PRIMARY KEY,
     short_name    text,
     full_name     text,
     university_id bigint,
@@ -22,7 +22,7 @@ CREATE TABLE institute
 
 CREATE TABLE department
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     short_name   text,
     full_name    text,
     vk_link      text,
@@ -32,7 +32,7 @@ CREATE TABLE department
 
 CREATE TABLE direction
 (
-    id            BIGSERIAL PRIMARY KEY,
+    id            BIGINT PRIMARY KEY,
     department_id bigint,
     number        text,
     name          text,
@@ -53,7 +53,7 @@ CREATE TABLE institute__department
 
 CREATE TABLE team
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     headman_id   bigint,
     direction_id bigint,
     name         text,
@@ -115,7 +115,7 @@ CREATE TABLE review
     table_name   text,
     text         text,
     rating       int,
-    created_time  timestamp DEFAULT (current_timestamp),
+    created_time timestamp DEFAULT (current_timestamp),
     updated_time timestamp
 );
 
@@ -170,7 +170,7 @@ CREATE TABLE personal_task
 CREATE TABLE status
 (
     id           BIGSERIAL PRIMARY KEY,
-    name       text,
+    name         text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
 );
@@ -187,12 +187,26 @@ CREATE TABLE discussion
 
 CREATE TABLE subject
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     name         text,
     direction_id bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
 );
+
+create sequence table_with_reviews_id_seq;
+
+alter TABLE department alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE direction alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE institute alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE subject alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE university alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE team alter column id set default nextval('table_with_reviews_id_seq');
 
 ALTER TABLE institute
     ADD FOREIGN KEY (university_id) REFERENCES university (id);
