@@ -3,6 +3,7 @@ package ru.ershov.pro_education.config;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -40,15 +41,15 @@ public class DevDataSourceConfig {
         hikariConfig.setJdbcUrl(container.getJdbcUrl());
         hikariConfig.setDriverClassName(container.getDriverClassName());
         final var hikariDataSource = new HikariDataSource(hikariConfig);
-//        Flyway.configure()
-//                .dataSource(hikariDataSource)
-//                .baselineVersion("0")
-//                .baselineOnMigrate(true)
-//                .ignoreMissingMigrations(true)
-//                .outOfOrder(true)
-//                .placeholderReplacement(false)
-//                .load()
-//                .migrate();
+        Flyway.configure()
+                .dataSource(hikariDataSource)
+                .baselineVersion("0")
+                .baselineOnMigrate(true)
+                .ignoreMissingMigrations(true)
+                .outOfOrder(true)
+                .placeholderReplacement(false)
+                .load()
+                .migrate();
         return hikariDataSource;
     }
 }
