@@ -11,28 +11,28 @@ import javax.sql.DataSource;
 @Configuration
 public class AppConfig {
 
-    @Value("${spring.datasource.url}")
-    private String url;
-    @Value("${spring.datasource.username}")
-    private String username;
-    @Value("${spring.datasource.password}")
-    private String password;
-    @Value("${spring.datasource.driver-class-name}")
-    private String driver;
+//    @Value("${spring.datasource.url}")
+//    private String url;
+//    @Value("${spring.datasource.username}")
+//    private String username;
+//    @Value("${spring.datasource.password}")
+//    private String password;
+//    @Value("${spring.datasource.driver-class-name}")
+//    private String driver;
 
-    @Bean
-    public JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
-    }
-
-    @Bean
-    public DataSource getDataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(url);
-        dataSource.setUsername(username);
-        dataSource.setPassword(password);
-        dataSource.setDriverClassName(driver);
-        return dataSource;
-    }
+//    @Bean
+//    public JdbcTemplate getJdbcTemplate() {
+//        return new JdbcTemplate(getDataSource());
+//    }
+//
+//    @Bean
+//    public DataSource getDataSource() {
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setUrl(url);
+//        dataSource.setUsername(username);
+//        dataSource.setPassword(password);
+//        dataSource.setDriverClassName(driver);
+//        return dataSource;
+//    }
 
 }

@@ -1,16 +1,17 @@
 CREATE TABLE university
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     short_name   text,
     full_name    text,
     vk_link      text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
+
 );
 
 CREATE TABLE institute
 (
-    id            BIGSERIAL PRIMARY KEY,
+    id            BIGINT PRIMARY KEY,
     short_name    text,
     full_name     text,
     university_id bigint,
@@ -21,7 +22,7 @@ CREATE TABLE institute
 
 CREATE TABLE department
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     short_name   text,
     full_name    text,
     vk_link      text,
@@ -31,7 +32,7 @@ CREATE TABLE department
 
 CREATE TABLE direction
 (
-    id            BIGSERIAL PRIMARY KEY,
+    id            BIGINT PRIMARY KEY,
     department_id bigint,
     number        text,
     name          text,
@@ -52,7 +53,7 @@ CREATE TABLE institute__department
 
 CREATE TABLE team
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     headman_id   bigint,
     direction_id bigint,
     name         text,
@@ -114,7 +115,7 @@ CREATE TABLE review
     table_name   text,
     text         text,
     rating       int,
-    create_time  timestamp DEFAULT (current_timestamp),
+    created_time timestamp DEFAULT (current_timestamp),
     updated_time timestamp
 );
 
@@ -127,7 +128,7 @@ CREATE TABLE tag
     updated_time timestamp
 );
 
-CREATE TABLE review_tag
+CREATE TABLE review__tag
 (
     id           BIGSERIAL PRIMARY KEY,
     review_id    bigint,
@@ -169,7 +170,7 @@ CREATE TABLE personal_task
 CREATE TABLE status
 (
     id           BIGSERIAL PRIMARY KEY,
-    status       text,
+    name         text,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
 );
@@ -186,12 +187,26 @@ CREATE TABLE discussion
 
 CREATE TABLE subject
 (
-    id           BIGSERIAL PRIMARY KEY,
+    id           BIGINT PRIMARY KEY,
     name         text,
     direction_id bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp
 );
+
+create sequence table_with_reviews_id_seq;
+
+alter TABLE department alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE direction alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE institute alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE subject alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE university alter column id set default nextval('table_with_reviews_id_seq');
+
+alter TABLE team alter column id set default nextval('table_with_reviews_id_seq');
 
 ALTER TABLE institute
     ADD FOREIGN KEY (university_id) REFERENCES university (id);
@@ -229,10 +244,10 @@ ALTER TABLE review
 ALTER TABLE review
     ADD FOREIGN KEY (status_id) REFERENCES status (id);
 
-ALTER TABLE review_tag
+ALTER TABLE review__tag
     ADD FOREIGN KEY (review_id) REFERENCES review (id);
 
-ALTER TABLE review_tag
+ALTER TABLE review__tag
     ADD FOREIGN KEY (tag_id) REFERENCES tag (id);
 
 ALTER TABLE homework

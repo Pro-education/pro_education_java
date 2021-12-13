@@ -6,11 +6,11 @@ services:
     image: postgres:13.3
     ports:
       - "5432:5432"
-    #  command: --init-file ./init.sql
+    #  command: --init-file ./V1__init.sql
     volumes:
-      - ./init.sql:/docker-entrypoint-initdb.d/1-init.sql
-      - ./fill.sql:/docker-entrypoint-initdb.d/2-fill.sql
-      - ./trigger.sql:/docker-entrypoint-initdb.d/3-trigger.sql
+      - ./V1__init.sql:/docker-entrypoint-initdb.d/1-V1__init.sql
+      - ./V2__fill.sql:/docker-entrypoint-initdb.d/2-V2__fill.sql
+      - ./V3__trigger.sql:/docker-entrypoint-initdb.d/3-V3__trigger.sql
     environment:
       - POSTGRES_DB=pro-education
       - POSTGRES_USER=u

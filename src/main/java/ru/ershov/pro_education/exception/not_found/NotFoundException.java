@@ -13,9 +13,13 @@ public class NotFoundException extends RuntimeException {
         HOMEWORK("Homework"),
         TASK("Task"),
         PERSONAL_TASK("Personal task"),
-        TEAM__PERSON("Team/Person");
+        TAG("Tag"),
+        REVIEW("Review"),
+        STATUS("Status"),
+        DISCUSSION("Discussion"),
+        TEAM_PERSON("Team/Person");
 
-        private String name;
+        private final String name;
 
         public String getName() {
             return name;

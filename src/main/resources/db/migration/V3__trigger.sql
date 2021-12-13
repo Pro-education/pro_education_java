@@ -75,7 +75,7 @@ EXECUTE PROCEDURE update_updated_time_column();
 
 CREATE TRIGGER update_time_review_tag
     BEFORE UPDATE
-    ON review_tag
+    ON review__tag
     FOR EACH ROW
 EXECUTE PROCEDURE update_updated_time_column();
 

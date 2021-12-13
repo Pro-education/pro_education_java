@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class})
 class AbstractCrudServiceTest {
 
     private final ModelMapper modelMapper = new ModelMapperConfig().modelMapper();
@@ -35,7 +35,7 @@ class AbstractCrudServiceTest {
 
     private TestAbstractCrud crud = null;
 
-    class TestAbstractCrud extends AbstractCrudService<TestAbstractEntity, TestAbstractDto, Number> {
+    private static class TestAbstractCrud extends AbstractCrudService<TestAbstractEntity, TestAbstractDto, Number> {
         protected TestAbstractCrud(AbstractDao<TestAbstractEntity, Number> dao, TestAbstractMapper mapper) {
             super(dao, mapper, RuntimeException.class);
         }

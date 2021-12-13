@@ -14,7 +14,7 @@ public class JdbcExceptionHandler {
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(DataAccessException.class)
-    String handleBadRequest(HttpServletRequest req, Exception ex) {
+    String handleBadRequest(HttpServletRequest req, DataAccessException ex) {
         return ex.getMessage();
     }
 
