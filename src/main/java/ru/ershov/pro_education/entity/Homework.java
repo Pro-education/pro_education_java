@@ -19,7 +19,7 @@ public class Homework extends AbstractEntity{
 
     @ManyToOne(clazz = Team.class)
     @Column(name = "team_id")
-    private Long teamId;
+    private Long groupId;
 
     @Column(name = "name")
     private String name;

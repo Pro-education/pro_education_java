@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Id;
+import ru.ershov.pro_education.annotation.ManyToOne;
 
 import java.sql.Timestamp;
 
@@ -29,5 +30,12 @@ public abstract class AbstractEntity {
 
     @Column(name = "created_time", onlyRead = true)
     private Timestamp createTime;
+
+    @Column(name = "check_status")
+    private String checkStatus;
+
+    @Column(name = "approver_id")
+    @ManyToOne(clazz = Person.class)
+    private Long approverId;
 
 }

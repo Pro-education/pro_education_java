@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE addPerson(role_name text, username varchar(127), name varchar(63),
+CREATE OR REPLACE PROCEDURE public.addPerson(role_name text, username varchar(127), name varchar(63),
                                       surname varchar(63), vk_link varchar(255), email text, password text)
 LANGUAGE plpgsql
 AS
@@ -45,7 +45,7 @@ begin
 end;
 $$;
 
-CREATE OR REPLACE PROCEDURE addPersonalTask(in_homework_id bigint, in_person_id bigint, in_is_solved boolean)
+CREATE OR REPLACE PROCEDURE public.addPersonalTask(in_homework_id bigint, in_person_id bigint, in_is_solved boolean)
 AS
     $$
     declare
@@ -81,8 +81,8 @@ AS
     end;
 $$ LANGUAGE 'plpgsql';
 
-CALL addPerson('ROLE_USER', 'username3', 'name3', 'surname3', 'https://vk.com/3', 'email3', 'password3');
-CALL addPersonalTask(null, 2, false);
+-- CALL addPerson('ROLE_USER', 'username3', 'name3', 'surname3', 'https://vk.com/3', 'email3', 'password3');
+-- CALL addPersonalTask(null, 2, false);
 
 
 

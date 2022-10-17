@@ -17,10 +17,10 @@ public class PersonRoleDaoImpl extends AbstractDao<PersonRole, Long> {
     }
 
     public List<PersonRole> findRoleIdsByPersonId(Long userId) {
-        return getAllFromParent(userId, Role.class);
+        return getAllFromParent(userId, Person.class);
     }
 
     public List<PersonRole> getUserIdsByRoleId(Long roleId) {
-        return getAllFromParent(roleId, Person.class);
+        return getAllFromParent(roleId, Role.class);
     }
 }

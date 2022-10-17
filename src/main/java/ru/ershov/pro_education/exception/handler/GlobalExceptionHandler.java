@@ -23,6 +23,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             SessionAuthenticationException.class})
     public ErrorInfo handleAuthenticationException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response){
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        System.out.println(ex);
         return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.authorization");
     }
 

@@ -1,10 +1,13 @@
 package ru.ershov.pro_education.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.ershov.pro_education.dao.AbstractDao;
 import ru.ershov.pro_education.dto.AbstractDto;
+import ru.ershov.pro_education.dto.PersonDto;
 import ru.ershov.pro_education.entity.AbstractEntity;
 import ru.ershov.pro_education.mapper.AbstractMapper;
+import ru.ershov.pro_education.service.impl.PersonServiceImpl;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -12,7 +15,11 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Slf4j
-public abstract class AbstractCrudService<E extends AbstractEntity, D extends AbstractDto, ID extends Number> implements CrudService<D, ID> {
+public abstract class AbstractCrudService<E extends AbstractEntity, D extends AbstractDto, ID extends Number>
+        implements CrudService<D, ID> {
+
+    @Autowired
+    private PersonServiceImpl personService;
 
     protected final AbstractDao<E, ID> dao;
     protected final AbstractMapper<E, D> mapper;
@@ -24,7 +31,7 @@ public abstract class AbstractCrudService<E extends AbstractEntity, D extends Ab
         this.exception = exception;
     }
 
-    private Supplier<RuntimeException> throwException(ID id) {
+    protected Supplier<RuntimeException> throwException(ID id) {
         return () -> {
             try {
                 return exception.getConstructor(Number.class).newInstance(id);
@@ -48,13 +55,22 @@ public abstract class AbstractCrudService<E extends AbstractEntity, D extends Ab
                 .collect(Collectors.toList());
     }
 
+    public List<D> findAllByStatus(Status status) {
+        return dao.findAllByStatus(status)
+                .stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     @Override
     public <S extends D> S insert(S entity) {
+        entity.setCheckStatus(Status.IN_CHECK);
         return (S) mapper.toDto(dao.insert(mapper.toEntity(entity)));
     }
 
     @Override
     public <S extends D> S update(ID id, S newEntity) {
+        newEntity.setCheckStatus(Status.IN_CHECK);
         return (S) mapper.toDto(dao.update(id, mapper.toEntity(newEntity)));
     }
 
@@ -67,4 +83,30 @@ public abstract class AbstractCrudService<E extends AbstractEntity, D extends Ab
     public boolean delete(ID id) {
         return dao.delete(id);
     }
+
+    @Override
+    public void passedUpdateStatus(ID id, Long approverId) {
+        E entity = dao.findById(id).orElseThrow(throwException(id));
+        entity.setApproverId(approverId);
+        entity.setCheckStatus(getNextStatus(entity.getCheckStatus()));
+        dao.update(id, entity);
+    }
+
+    @Override
+    public void notPassedUpdateStatus(ID id, Long approverId) {
+        E entity = dao.findById(id).orElseThrow(throwException(id));
+        entity.setApproverId(approverId);
+        entity.setCheckStatus(Status.NOT_PASSED.name());
+        dao.update(id, entity);
+    }
+
+    private String getNextStatus(String current) {
+        return Status.next(Status.valueOf(current)).name();
+    }
+
+    public PersonDto getApprover(ID id) {
+        E e = dao.findById(id).orElseThrow(throwException(id));
+        return personService.findById(e.getApproverId());
+    }
+
 }

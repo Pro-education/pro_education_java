@@ -5,7 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.EqualsAndHashCode;
+import org.springframework.security.access.method.P;
 import ru.ershov.pro_education.annotation.Column;
+import ru.ershov.pro_education.annotation.ManyToOne;
 import ru.ershov.pro_education.annotation.Table;
 
 @Setter
@@ -24,5 +26,9 @@ public class University extends AbstractEntity {
 
     @Column(name = "vk_link")
     private String vkLink;
+
+    @ManyToOne(clazz = Person.class)
+    @Column(name = "owner")
+    private Long owner;
 
 }

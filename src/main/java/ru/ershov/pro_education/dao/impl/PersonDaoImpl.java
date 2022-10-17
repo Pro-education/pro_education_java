@@ -27,6 +27,21 @@ public class PersonDaoImpl extends AbstractDao<Person, Long> {
             return Optional.empty();
         }
         return Optional.ofNullable(users.get(0));
+    }
 
+    public <S extends Person> S createPerson(S person) {
+        MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+        mapSqlParameterSource.addValue("role_name", "ROLE_USER");
+        mapSqlParameterSource.addValue("username", person.getUsername());
+        mapSqlParameterSource.addValue("name", person.getName());
+        mapSqlParameterSource.addValue("surname", person.getSurname());
+        mapSqlParameterSource.addValue("vk_link", person.getVkLink());
+        mapSqlParameterSource.addValue("email", person.getEmail());
+        mapSqlParameterSource.addValue("password", person.getPassword());
+        jdbcTemplate.getJdbcTemplate().update(
+                "call public.addPerson (?, ?, ?, ?, ?, ?, ?)",
+                "ROLE_USER", person.getUsername(), person.getName(), person.getSurname(),
+                person.getVkLink(), person.getEmail(), person.getPassword());
+        return person;
     }
 }

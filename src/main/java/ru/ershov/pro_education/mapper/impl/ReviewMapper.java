@@ -16,7 +16,7 @@ public class ReviewMapper extends AbstractMapper<Review, ReviewDto> {
     protected ReviewMapper(ModelMapper modelMapper, StatusServiceImpl statusService) {
         super(Review.class, ReviewDto.class, modelMapper);
         modelMapper
-                .createTypeMap(Review.class, ReviewDto.class)
+                .getTypeMap(Review.class, ReviewDto.class)
                 .addMappings(m -> m.skip(ReviewDto::setStatus)).setPostConverter(toDtoConverter(statusService));
     }
 
@@ -30,7 +30,7 @@ public class ReviewMapper extends AbstractMapper<Review, ReviewDto> {
     }
 
     private void mapSpecificFields(Review source, ReviewDto destination, StatusServiceImpl statusService) {
-        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getId())
+        destination.setStatus(Objects.isNull(source) || Objects.isNull(source.getStatusId())
                 ? null
                 : statusService.findById(source.getStatusId()).getName());
     }

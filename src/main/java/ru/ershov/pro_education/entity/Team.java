@@ -19,8 +19,7 @@ public class Team extends AbstractEntity{
 
     @ManyToOne(clazz = Person.class)
     @Column(name = "headman_id")
-    //id
-    private Long headmanId;
+    private Long headman;
 
     @ManyToOne(clazz = Direction.class)
     @Column(name = "direction_id")

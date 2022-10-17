@@ -8,19 +8,20 @@ import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.entity.University;
 import ru.ershov.pro_education.exception.not_found.InstituteNotFound;
 import ru.ershov.pro_education.mapper.impl.UniversityMapper;
-import ru.ershov.pro_education.service.AbstractCrudService;
+import ru.ershov.pro_education.service.AbstractWithReviewService;
 
 import java.util.List;
 
 @Service
-public class UniversityServiceImpl extends AbstractCrudService<University, UniversityDto, Long> {
+public class UniversityServiceImpl extends AbstractWithReviewService<University, UniversityDto, Long> {
 
     private final InstituteServiceImpl instituteService;
 
     protected UniversityServiceImpl(
             UniversityDaoImpl dao,
             UniversityMapper mapper,
-            InstituteServiceImpl instituteService) {
+            InstituteServiceImpl instituteService
+    ) {
         super(dao, mapper, InstituteNotFound.class);
         this.instituteService = instituteService;
     }
@@ -34,4 +35,11 @@ public class UniversityServiceImpl extends AbstractCrudService<University, Unive
     public List<InstituteDto> findAllInstitutes(Long id) {
         return instituteService.findAllByUniversityId(id);
     }
+
+    public UniversityDto connectOwner(Long universityId, Long ownerId) {
+        UniversityDto byId = findById(universityId);
+        byId.setOwner(ownerId);
+        return update(byId.getId(), byId);
+    }
+
 }

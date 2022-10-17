@@ -6,13 +6,13 @@ import ru.ershov.pro_education.dto.InstituteDto;
 import ru.ershov.pro_education.entity.Institute;
 import ru.ershov.pro_education.exception.not_found.InstituteNotFound;
 import ru.ershov.pro_education.mapper.impl.InstituteMapper;
-import ru.ershov.pro_education.service.AbstractCrudService;
+import ru.ershov.pro_education.service.AbstractWithReviewService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class InstituteServiceImpl extends AbstractCrudService<Institute, InstituteDto, Long> {
+public class InstituteServiceImpl extends AbstractWithReviewService<Institute, InstituteDto, Long> {
 
     private final InstituteDaoImpl instituteDao;
 

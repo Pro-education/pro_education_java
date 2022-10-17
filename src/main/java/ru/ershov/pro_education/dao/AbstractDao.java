@@ -1,11 +1,11 @@
 package ru.ershov.pro_education.dao;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.NotWritablePropertyException;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.beans.TypeMismatchException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -18,6 +18,7 @@ import ru.ershov.pro_education.annotation.Column;
 import ru.ershov.pro_education.annotation.Id;
 import ru.ershov.pro_education.annotation.ManyToOne;
 import ru.ershov.pro_education.annotation.Table;
+import ru.ershov.pro_education.service.Status;
 
 import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
@@ -39,10 +40,12 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
 
-    public static final String SET_TEMPLATE = "SET %s = %s";
-    public static final String WHERE_ADDER = "WHERE id = :id";
+    public static final String SET_TEMPLATE = "%s = %s";
+    public static final String WHERE_ID = "WHERE id = :id";
+    public static final String WHERE_STATUS = "WHERE check_status = :check_status";
 
     protected final NamedParameterJdbcTemplate jdbcTemplate;
     private final Class<T> tableClass;
@@ -59,7 +62,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         selectPattern = "SELECT %s FROM " + getTableName() + " ";
         existPattern = "SELECT count(*) FROM " + getTableName() + " ";
         insertPattern = "INSERT INTO " + getTableName() + " (%s) VALUES ('%s');";
-        updatePattern = "UPDATE " + getTableName() + " %s WHERE %s = %s;";
+        updatePattern = "UPDATE " + getTableName() + " SET %s WHERE %s = %s;";
         deletePattern = "DELETE FROM " + getTableName() + " WHERE %s = %s;";
         selectAllFromParent = getBaseSqlQuery() + " WHERE %s = :parentId;";
     }
@@ -98,7 +101,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
 
     @Override
     public boolean existById(ID id) {
-        String sql = existPattern + WHERE_ADDER;
+        String sql = existPattern + WHERE_ID;
         MapSqlParameterSource mapSqlParameterSource =
                 new MapSqlParameterSource("id", id);
         Integer t = jdbcTemplate.queryForObject(sql, mapSqlParameterSource, Integer.class);
@@ -108,7 +111,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
     @Override
     public Optional<T> findById(ID id) {
         try {
-            String sql = getBaseSqlQuery() + WHERE_ADDER;
+            String sql = getBaseSqlQuery() + WHERE_ID;
             MapSqlParameterSource mapSqlParameterSource =
                     new MapSqlParameterSource("id", id);
             return Optional.ofNullable(
@@ -121,14 +124,26 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
 
     @Override
     public List<T> findAll() {
-        return jdbcTemplate.query(getBaseSqlQuery(), getRowMapper());
+        String baseSqlQuery = getBaseSqlQuery();
+        log.info(baseSqlQuery);
+        return jdbcTemplate.query(baseSqlQuery, getRowMapper());
+    }
+
+    public List<T> findAllByStatus(Status status) {
+        String baseSqlQuery = getBaseSqlQuery() + WHERE_STATUS;
+        MapSqlParameterSource mapSqlParameterSource =
+                new MapSqlParameterSource("check_status", status.name());
+        log.info(baseSqlQuery);
+        return jdbcTemplate.query(baseSqlQuery, mapSqlParameterSource, getRowMapper());
     }
 
     @Transactional
     public <S extends T> S insert(S entity) {
-        String extracted = pasteSqlInsert(entity);
+        String sql = pasteSqlInsert(entity);
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(extracted, new MapSqlParameterSource(), keyHolder, new String[]{"id"});
+
+        log.info(sql);
+        jdbcTemplate.update(sql, new MapSqlParameterSource(), keyHolder, new String[]{"id"});
         invokeSetter(entity, "id", keyHolder.getKey());
         return entity;
     }
@@ -139,6 +154,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
             throw new IllegalArgumentException();
         }
         String sql = pasteSqlUpdate(id, newEntity);
+        log.info(sql);
         jdbcTemplate.update(sql, new MapSqlParameterSource());
         invokeSetter(newEntity, "id", id);
         return newEntity;
@@ -171,7 +187,7 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
 
     private <S extends T> String pasteSqlUpdate(ID id, S entity) {
         List<String> str = new ArrayList<>();
-        for (Map.Entry<String, String> fieldAnnotationEntry : findColumnFieldsNameAndValue(entity)) {
+        for (Map.Entry<String, String> fieldAnnotationEntry : findColumnFieldsNameAndValueToUpdate(entity)) {
             str.add(String.format(SET_TEMPLATE, fieldAnnotationEntry.getKey(), fieldAnnotationEntry.getValue()));
         }
         String idFieldName = findIdField(entity.getClass());
@@ -199,7 +215,31 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
                         && !field.getDeclaredAnnotation(Column.class).onlyRead()
                         && !field.isAnnotationPresent(Id.class)
                 ) {
-                    map.put(field.getDeclaredAnnotation(Column.class).name(), invokeGetter(entity, field.getName()));
+                    String value = invokeGetter(entity, field.getName());
+                    if (value != null) {
+                        map.put(field.getDeclaredAnnotation(Column.class).name(), value);
+                    }
+                }
+            }
+            c = c.getSuperclass();
+        }
+        return map.entrySet();
+    }
+
+    protected <S extends T> Set<Map.Entry<String, String>> findColumnFieldsNameAndValueToUpdate(S entity) {
+        Map<String, String> map = new HashMap<>();
+        Class<?> c = entity.getClass();
+        while (c != null) {
+            for (Field field : c.getDeclaredFields()) {
+                if (field.isAnnotationPresent(Column.class)
+                        && !field.getDeclaredAnnotation(Column.class).onlyRead()
+                        && !field.isAnnotationPresent(Id.class)
+                ) {
+                    Object value = invokeObjectGetter(entity, field.getName());
+                    if (value != null) {
+                        map.put(field.getDeclaredAnnotation(Column.class).name(),
+                                value instanceof String ? "'" + value + "'" : value.toString());
+                    }
                 }
             }
             c = c.getSuperclass();
@@ -310,6 +350,26 @@ public abstract class AbstractDao<T, ID extends Number> implements Dao<T, ID> {
         if (apply == null)
             return null;
         return apply.toString();
+    }
+
+    private Object invokeObjectGetter(T obj, String variableName) {
+        Function<T, Object> getterFunction = (o) -> "no get value";
+        try {
+            final String getterName = "get" + Character.toUpperCase(variableName.charAt(0)) + variableName.substring(1);
+            final Method method = tableClass.getMethod(getterName);
+            final MethodHandles.Lookup lookup = MethodHandles.lookup();
+            final MethodHandle methodHandle = lookup.unreflect(method);
+            final CallSite site = LambdaMetafactory.metafactory(lookup,
+                    "apply",
+                    MethodType.methodType(Function.class),
+                    MethodType.methodType(Object.class, Object.class),
+                    methodHandle,
+                    methodHandle.type());
+            getterFunction = (Function<T, Object>) site.getTarget().invokeExact();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return getterFunction.apply(obj);
     }
 
 }

@@ -1,22 +1,25 @@
 package ru.ershov.pro_education.config.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.method.P;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
+import ru.ershov.pro_education.entity.Person;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,8 @@ import java.util.stream.Collectors;
 public class TokenProvider {
     private static final byte[] SIGNING_KEY = "signingkey".getBytes(StandardCharsets.UTF_8);
     private static final String AUTHORITIES_KEY = "roles";
-    private static final int TOKEN_VALIDITY = 30;
+    private static final int TOKEN_VALIDITY = 10000;
+    private static final int REFRESH_TOKEN_VALID = 120;
 
     public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
@@ -56,8 +60,11 @@ public class TokenProvider {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
+        System.out.println(authorities);
+
+        Person principal = (Person) authentication.getPrincipal();
         return Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(principal.getEmail())
                 .claim(AUTHORITIES_KEY, authorities)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + TOKEN_VALIDITY * 1000))
@@ -65,12 +72,14 @@ public class TokenProvider {
                 .compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateToken(String token, Person userDetails) {
         final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username.equals(userDetails.getEmail()) && !isTokenExpired(token));
     }
 
-    UsernamePasswordAuthenticationToken getAuthenticationToken(final String token, final Authentication existingAuth, final UserDetails userDetails) {
+    UsernamePasswordAuthenticationToken getAuthenticationToken(
+            final String token, final Authentication existingAuth, final UserDetails userDetails
+    ) {
 
         final JwtParser jwtParser = Jwts.parser().setSigningKey(SIGNING_KEY);
 
@@ -84,5 +93,12 @@ public class TokenProvider {
                         .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
+    }
+
+    public String doGenerateRefreshToken(Map<String, Object> claims, String subject) {
+        return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID * 1000))
+                .signWith(SignatureAlgorithm.HS512, SIGNING_KEY).compact();
+
     }
 }

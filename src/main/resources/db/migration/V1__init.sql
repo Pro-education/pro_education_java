@@ -5,8 +5,10 @@ CREATE TABLE university
     full_name    text,
     vk_link      text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
-
+    updated_time timestamp,
+    owner        bigint,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE institute
@@ -17,7 +19,9 @@ CREATE TABLE institute
     university_id bigint,
     vk_link       text,
     created_time  timestamp default (current_timestamp),
-    updated_time  timestamp
+    updated_time  timestamp,
+    check_status  text,
+    approval_id  bigint
 );
 
 CREATE TABLE department
@@ -27,7 +31,9 @@ CREATE TABLE department
     full_name    text,
     vk_link      text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE direction
@@ -38,7 +44,9 @@ CREATE TABLE direction
     name          text,
     vk_link       text,
     created_time  timestamp default (current_timestamp),
-    updated_time  timestamp
+    updated_time  timestamp,
+    check_status  text,
+    approval_id  bigint
 );
 
 CREATE TABLE institute__department
@@ -48,6 +56,8 @@ CREATE TABLE institute__department
     institute_id  bigint,
     created_time  timestamp default (current_timestamp),
     updated_time  timestamp,
+    check_status  text,
+    approval_id  bigint,
     UNIQUE (department_id, institute_id)
 );
 
@@ -59,7 +69,9 @@ CREATE TABLE team
     name         text,
     vk_link      text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE person
@@ -75,7 +87,9 @@ CREATE TABLE person
     rating_sum   bigint,
     rating_count bigint,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE role
@@ -83,7 +97,9 @@ CREATE TABLE role
     id           BIGSERIAL PRIMARY KEY,
     name         text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE person__role
@@ -93,6 +109,8 @@ CREATE TABLE person__role
     person_id    bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp,
+    check_status text,
+    approval_id  bigint,
     UNIQUE (role_id, person_id)
 );
 
@@ -103,6 +121,8 @@ CREATE TABLE team__person
     person_id    bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp,
+    check_status text,
+    approval_id  bigint,
     UNIQUE (team_id, person_id)
 );
 
@@ -116,7 +136,9 @@ CREATE TABLE review
     text         text,
     rating       int,
     created_time timestamp DEFAULT (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE tag
@@ -125,7 +147,9 @@ CREATE TABLE tag
     text         text,
     color        text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE review__tag
@@ -135,6 +159,8 @@ CREATE TABLE review__tag
     tag_id       bigint,
     created_time timestamp default (current_timestamp),
     updated_time timestamp,
+    check_status text,
+    approval_id  bigint,
     UNIQUE (review_id, tag_id)
 );
 
@@ -144,17 +170,21 @@ CREATE TABLE homework
     team_id      bigint,
     name         text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE task
 (
-    id               BIGSERIAL PRIMARY KEY,
-    text             text,
-    subject_id       bigint,
-    homework_id      bigint,
-    created_time     timestamp default (current_timestamp),
-    updated_time     timestamp
+    id           BIGSERIAL PRIMARY KEY,
+    text         text,
+    subject_id   bigint,
+    homework_id  bigint,
+    created_time timestamp default (current_timestamp),
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE personal_task
@@ -164,7 +194,9 @@ CREATE TABLE personal_task
     person_id    bigint,
     is_solved    boolean,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE status
@@ -172,7 +204,9 @@ CREATE TABLE status
     id           BIGSERIAL PRIMARY KEY,
     name         text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE discussion
@@ -182,7 +216,9 @@ CREATE TABLE discussion
     person_id    bigint,
     text         text,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 CREATE TABLE subject
@@ -191,22 +227,33 @@ CREATE TABLE subject
     name         text,
     direction_id bigint,
     created_time timestamp default (current_timestamp),
-    updated_time timestamp
+    updated_time timestamp,
+    check_status text,
+    approval_id  bigint
 );
 
 create sequence table_with_reviews_id_seq;
 
-alter TABLE department alter column id set default nextval('table_with_reviews_id_seq');
+alter TABLE department
+    alter column id set default nextval('table_with_reviews_id_seq');
 
-alter TABLE direction alter column id set default nextval('table_with_reviews_id_seq');
+alter TABLE direction
+    alter column id set default nextval('table_with_reviews_id_seq');
 
-alter TABLE institute alter column id set default nextval('table_with_reviews_id_seq');
+alter TABLE institute
+    alter column id set default nextval('table_with_reviews_id_seq');
 
-alter TABLE subject alter column id set default nextval('table_with_reviews_id_seq');
+alter TABLE subject
+    alter column id set default nextval('table_with_reviews_id_seq');
 
-alter TABLE university alter column id set default nextval('table_with_reviews_id_seq');
+alter TABLE university
+    alter column id set default nextval('table_with_reviews_id_seq');
 
-alter TABLE team alter column id set default nextval('table_with_reviews_id_seq');
+alter TABLE team
+    alter column id set default nextval('table_with_reviews_id_seq');
+
+ALTER TABLE university
+    ADD FOREIGN KEY (owner) REFERENCES person (id);
 
 ALTER TABLE institute
     ADD FOREIGN KEY (university_id) REFERENCES university (id);
@@ -241,6 +288,7 @@ ALTER TABLE team__person
 ALTER TABLE review
     ADD FOREIGN KEY (person_id) REFERENCES person (id);
 
+
 ALTER TABLE review
     ADD FOREIGN KEY (status_id) REFERENCES status (id);
 
@@ -273,3 +321,30 @@ ALTER TABLE discussion
 
 ALTER TABLE subject
     ADD FOREIGN KEY (direction_id) REFERENCES direction (id);
+
+INSERT INTO person (email, password, enabled)
+values ('string', 'password', true);
+
+INSERT into role(name)
+values ('ROLE_USER');
+INSERT into role(name)
+values ('ROLE_ADMIN');
+
+INSERT into person__role (role_id, person_id)
+values (1, 1);
+
+INSERT INTO person (email, password, enabled)
+values ('string1', 'stringstring', true);
+
+INSERT into person__role (role_id, person_id)
+values (1, 2);
+
+
+
+INSERT INTO person (email, password, enabled)
+values ('admin', 'adminadmin', true);
+
+
+
+INSERT into person__role (role_id, person_id)
+values (2, 3);

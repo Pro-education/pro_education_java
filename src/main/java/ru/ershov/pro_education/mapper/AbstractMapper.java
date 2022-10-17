@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.ershov.pro_education.dto.AbstractDto;
 import ru.ershov.pro_education.entity.AbstractEntity;
+import ru.ershov.pro_education.service.Status;
 
 import java.util.Objects;
 
@@ -28,6 +29,22 @@ public abstract class AbstractMapper<E extends AbstractEntity, D extends Abstrac
         this.entityClass = entityClass;
         this.dtoClass = dtoClass;
         this.mapper = mapper;
+        mapper.createTypeMap(entityClass, dtoClass)
+                .addMappings(m -> m.skip(AbstractDto::setCheckStatus))
+                .setPostConverter(context -> {
+                    E source = context.getSource();
+                    D destination = context.getDestination();
+                    destination.setCheckStatus(Status.valueOf(source.getCheckStatus()));
+                    return context.getDestination();
+                });
+        mapper.createTypeMap(dtoClass, entityClass)
+                .addMappings(m -> m.skip(AbstractEntity::setCheckStatus))
+                .setPostConverter(context -> {
+                    D source = context.getSource();
+                    E destination = context.getDestination();
+                    destination.setCheckStatus(source.getCheckStatus().name());
+                    return context.getDestination();
+                });
     }
 
     @Override
